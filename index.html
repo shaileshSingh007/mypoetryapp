@@ -1,48 +1,152 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Poetry App</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f9f3ee;
-        color: #2d1b12;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-      }
-
-      .container {
-        max-width: 700px;
-        background: #fffaf5;
-        border: 1px solid #ead8ca;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        padding: 40px 30px;
-        text-align: center;
-      }
-
-      h1 {
-        font-size: 2.4rem;
-        margin-bottom: 16px;
-      }
-
-      p {
-        font-size: 1.1rem;
-        line-height: 1.7;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>My Poetry App</h1>
-      <p>“Poetry is when an emotion has found its thought and the thought has found words.”</p>
-      <p>– Robert Frost</p>
-    </div>
-  </body>
-</html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My Poetry Library</title><meta name="theme-color" content="#b8923a">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{--bg:#f6f3ee;--card:#fff;--tx:#2b2b2b;--mu:#8a847a;--g:#b8923a;--bd:#e6e0d4}
+[data-t=dark]{--bg:#161616;--card:#212121;--tx:#ece7dc;--mu:#9a9488;--bd:#333}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 'Cormorant Garamond','Noto Serif Devanagari',Georgia,serif;padding:env(safe-area-inset-top) 0 0}
+main{max-width:720px;margin:auto;padding:14px 14px calc(84px + env(safe-area-inset-bottom))}
+h1,h2{font-weight:600;margin:.3em 0}.mu{color:var(--mu);font-size:.85em}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin:10px 0}
+.it{cursor:pointer}.it b{font-size:1.15em}.it p{margin:.3em 0 0;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button,select,input,textarea{font:inherit;color:inherit}
+button,.b{border:1px solid var(--bd);background:var(--card);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer}
+.p{background:var(--g);color:#fff;border-color:var(--g)}.d{color:#b3402f}
+input,select,textarea{width:100%;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:11px;margin:4px 0}
+textarea{min-height:46vh;line-height:1.8;font-family:'Noto Serif Devanagari',Georgia,serif}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.n{font-size:1.8em;color:var(--g);text-align:center}.chip{display:inline-block;border:1px solid var(--g);border-radius:99px;padding:2px 10px;margin:2px;font-size:.85em;cursor:pointer}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;border-radius:0;background:none;font-size:.8em}nav .on{color:var(--g);font-weight:600}
+#rd{white-space:pre-wrap;font-family:'Noto Serif Devanagari',Georgia,serif;font-size:20px;line-height:1.9}
+#toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:9;display:none}
+#ld{position:fixed;top:0;left:0;height:3px;background:var(--g);width:0;transition:width .3s}
+#login{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.hide{display:none!important}.fs main{max-width:none}.fs nav,.fs .nofs{display:none}
+@media(min-width:900px){nav{top:0;bottom:auto;width:150px;right:auto;flex-direction:column;border:0;border-right:1px solid var(--bd);padding-top:30px}main{margin-left:190px}}
+@media print{nav,.nofs,#toast{display:none}}
+</style></head><body>
+<!-- ===== CONFIG: paste your values ===== -->
+<script>const CFG={API_URL:'https://script.google.com/macros/s/AKfycby-TXSgMy7sn0K1CJ9Tbq_Ax29UwDbkFkK1zp4s2Zhu8uDYFLmnl3qgwEmMpxV-lRr0gg/exec',DEPLOYMENT_ID:'AKfycby-TXSgMy7sn0K1CJ9Tbq_Ax29UwDbkFkK1zp4s2Zhu8uDYFLmnl3qgwEmMpxV-lRr0gg',CLIENT_ID:'836215858083-gm17ivcj7bd52tu4nev3hmfa0o7vnk38.apps.googleusercontent.com',EMAIL:'shailesh.r.c.singh@gmail.com'};</script>
+<div id="ld"></div><div id="toast"></div>
+<div id="login" class="hide"><h1 style="font-size:2.4em">My Poetry Library</h1><div class="mu">Your private collection</div><div id="gb"></div><div id="lerr" class="d"></div></div>
+<div id="app" class="hide"><nav id="nv"></nav><main id="m"></main></div>
+<script>
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LS={g:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const S={items:[],view:'home',id:null,page:1,fp:false,f:LS.g('flt',{q:'',cat:'',lang:'',status:'',fav:'',tag:'',sort:'new'}),dirty:false};
+let TOKEN=LS.g('tok',''),busy=false;
+function toast(t,err){const e=$('#toast');e.textContent=t;e.style.background=err?'#b3402f':'';e.style.display='block';setTimeout(()=>e.style.display='none',2800)}
+function jwt(t){try{return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')))}catch{return null}}
+// ---- Auth ----
+function showLogin(msg){$('#app').classList.add('hide');$('#login').classList.remove('hide');$('#lerr').textContent=msg||''}
+function onCred(r){const p=jwt(r.credential);
+ if(!p||String(p.email).toLowerCase()!==CFG.EMAIL.toLowerCase()||!p.email_verified)return showLogin('Access denied: this Google account is not authorized.');
+ TOKEN=r.credential;LS.s('tok',TOKEN);start()}
+function logout(){TOKEN='';localStorage.removeItem('tok');localStorage.removeItem('pc');S.items=[];google.accounts.id.disableAutoSelect();showLogin()}
+function initG(){if(!window.google||!google.accounts){return setTimeout(initG,300)}
+ google.accounts.id.initialize({client_id:CFG.CLIENT_ID,callback:onCred,auto_select:true});
+ google.accounts.id.renderButton($('#gb'),{theme:'outline',size:'large',text:'continue_with',shape:'pill'});
+ const p=jwt(TOKEN);if(p&&p.exp*1000>Date.now()+6e4)start();else{showLogin();google.accounts.id.prompt()}}
+// ---- API service ----
+async function api(action,data){
+ $('#ld').style.width='70%';
+ try{const r=await fetch(CFG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:TOKEN,action,data})});
+  const j=await r.json();if(!j.ok){if(j.error==='auth'){logout();showLogin('Session expired or unauthorized. Please sign in again.');throw 0}throw new Error(j.error)}return j}
+ catch(e){if(e===0)throw e;throw new Error(e.message==='Failed to fetch'?'Network error. Check your connection and retry.':e.message)}
+ finally{$('#ld').style.width='100%';setTimeout(()=>$('#ld').style.width='0',300)}}
+const getAllPoetries=async()=>{const j=await api('list');S.items=j.data;LS.s('pc',j.data)};
+const addPoetry=d=>api('add',d),updatePoetry=(id,d)=>api('update',{...d,id}),deletePoetry=id=>api('delete',{id}),updateFavorite=(id,value)=>api('favorite',{id,value});
+async function start(){$('#login').classList.add('hide');$('#app').classList.remove('hide');S.items=LS.g('pc',[]);go('home');
+ try{await getAllPoetries()}catch(e){if(e)toast(e.message+' (showing cached data)',1)}go(S.view,S.id)}
+// ---- Helpers ----
+const byId=id=>S.items.find(p=>p.ID===id),fd=d=>d?new Date(d).toLocaleDateString():'';
+const tags=p=>String(p.Tags||'').split(',').map(x=>x.trim()).filter(Boolean);
+const cats=()=>[...new Set(S.items.map(p=>p.Category).filter(Boolean))].sort();
+function list(favOnly,catOnly){const f=S.f,q=f.q.toLowerCase();
+ let a=S.items.filter(p=>(!favOnly||p.Favorite)&&(!catOnly||p.Category===catOnly)&&(!q||[p.Title,p.Content,p.Category,p.Tags,p.Language].join(' ').toLowerCase().includes(q))
+  &&(!f.cat||p.Category===f.cat)&&(!f.lang||p.Language===f.lang)&&(!f.status||p.Status===f.status)&&(!f.fav||(f.fav==='y')===p.Favorite)&&(!f.tag||tags(p).includes(f.tag)));
+ const s={new:(x,y)=>y.CreatedAt>x.CreatedAt?1:-1,old:(x,y)=>x.CreatedAt>y.CreatedAt?1:-1,az:(x,y)=>x.Title.localeCompare(y.Title),za:(x,y)=>y.Title.localeCompare(x.Title),upd:(x,y)=>y.UpdatedAt>x.UpdatedAt?1:-1};
+ return a.sort(s[f.sort]||s.new)}
+const card=p=>`<div class="c it" data-id="${E(p.ID)}"><b>${E(p.Title)}</b> ${p.Favorite?'<span style="color:var(--g)">★</span>':''}${p.Status==='Draft'?' <span class="mu">(draft)</span>':''}<div class="mu">${E(p.Category)} · ${E(p.Language)} · ${fd(p.UpdatedAt)}</div><p>${E(String(p.Content).split('\n')[0])}</p></div>`;
+function sel(id,opts,v,ph){return `<select id="${id}"><option value="">${ph}</option>${opts.map(o=>`<option ${o==v?'selected':''}>${E(o)}</option>`).join('')}</select>`}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click()}
+function txt(p){return p.Title+'\n\n'+p.Content+'\n\n— '+p.Category+', '+p.Language}
+const csv=()=>{const H=['ID','Title','Category','Language','Content','Tags','CreatedAt','UpdatedAt','Favorite','Status'];return H.join(',')+'\n'+S.items.map(p=>H.map(k=>'"'+String(p[k]).replace(/"/g,'""')+'"').join(',')).join('\n')};
+// ---- Views ----
+function nav(){$('#nv').innerHTML=[['home','Home'],['all','Poems'],['favs','Favorites'],['cats','Categories'],['set','Settings']].map(([k,l])=>`<button data-go="${k}" class="${S.view===k?'on':''}">${l}</button>`).join('')}
+function go(v,id){if(S.dirty&&S.view==='edit'&&!confirm('Discard unsaved changes?'))return;S.dirty=false;S.view=v;S.id=id||null;S.page=1;nav();document.body.classList.remove('fs');R();scrollTo(0,0)}
+function R(){const m=$('#m'),V=V_[S.view];m.innerHTML=V?V():''; if(V_[S.view+'_']) V_[S.view+'_']()}
+const V_={
+home(){const a=S.items,h=LS.g('hist',[]).map(byId).filter(Boolean),day=a.length?a[Math.floor(new Date().setHours(0,0,0,0)/864e5)%a.length]:null;
+ const rec=[...a].sort((x,y)=>y.CreatedAt>x.CreatedAt?1:-1).slice(0,3);
+ return `<h1>My Poetry Library</h1><input id="hq" type="search" placeholder="Search poems…" value="">
+ <div class="g3"><div class="c"><div class="n">${a.length}</div><div class="mu" style="text-align:center">Poems</div></div><div class="c"><div class="n">${a.filter(p=>p.Favorite).length}</div><div class="mu" style="text-align:center">Favorites</div></div><div class="c"><div class="n">${cats().length}</div><div class="mu" style="text-align:center">Categories</div></div></div>
+ <div class="row"><button class="p" data-go="edit">＋ New poem</button><button id="rnd">Random</button></div>
+ ${day?`<h2>Poem of the day</h2>${card(day)}`:'<div class="c mu">No poems yet. Tap “New poem” to add your first.</div>'}
+ ${h.length?`<h2>Continue reading</h2>${h.slice(0,3).map(card).join('')}`:''}<h2>Recently added</h2>${rec.map(card).join('')}`},
+all(){return page(false)},favs(){return '<h1>Favorites</h1>'+page(true)},
+cats(){if(S.id)return `<button data-go="cats">← Categories</button><h1>${E(S.id)}</h1>`+page(false,S.id);
+ const tg={};S.items.forEach(p=>tags(p).forEach(t=>tg[t]=(tg[t]||0)+1));
+ return `<h1>Categories</h1>${cats().map(c=>`<div class="c it" data-go="cats" data-a="${E(c)}">${E(c)} <span class="mu">(${S.items.filter(p=>p.Category===c).length})</span></div>`).join('')||'<div class="mu">Empty.</div>'}<h2>Tags</h2>${Object.keys(tg).map(t=>`<span class="chip" data-tag="${E(t)}">${E(t)} ${tg[t]}</span>`).join('')}`},
+read(){const p=byId(S.id);if(!p)return '<div class="c">Poem not found.</div>';const z=LS.g('rs',{s:20,l:1.9});
+ return `<div class="nofs row"><button data-go="all">← Back</button><button id="fs">Full screen</button></div><h1>${E(p.Title)}</h1><div class="mu">${E(p.Category)} · ${E(p.Language)} · ${E(p.Status)}</div>
+ <div id="rd" style="font-size:${z.s}px;line-height:${z.l}">${E(p.Content)}</div><div class="mu">${tags(p).map(t=>'#'+E(t)).join(' ')}<br>Created ${fd(p.CreatedAt)} · Updated ${fd(p.UpdatedAt)}</div>
+ <div class="nofs c"><div class="row"><label>Size<input id="zs" type="range" min="14" max="34" value="${z.s}"></label><label>Spacing<input id="zl" type="range" min="1.3" max="2.6" step=".1" value="${z.l}"></label></div>
+ <div class="row"><button id="fv">${p.Favorite?'★ Unfavorite':'☆ Favorite'}</button><button data-go="edit" data-a="${p.ID}">Edit</button><button id="cp">Copy</button><button id="sh">Share</button><button id="tx">TXT</button><button onclick="print()">PDF / Print</button><button class="d" id="del">Delete</button></div></div>`},
+edit(){const p=S.id?byId(S.id):{Title:'',Category:'Kavita',Language:'Hindi',Content:'',Tags:'',Status:'Draft',Favorite:false};
+ return `<h1>${S.id?'Edit':'New'} poem</h1><input id="et" placeholder="Title *" value="${E(p.Title)}">
+ <div class="row"><input id="ec" list="cl" placeholder="Category" value="${E(p.Category)}"><datalist id="cl">${[...new Set(['Ghazal','Kavita','Shayari','Nazm','Free Verse','Other',...cats()])].map(c=>`<option>${E(c)}</option>`).join('')}</datalist>
+ <select id="el">${['Hindi','English','Urdu','Other'].map(l=>`<option ${l==p.Language?'selected':''}>${l}</option>`).join('')}</select></div>
+ <textarea id="eb" placeholder="Write here… *">${E(p.Content)}</textarea><div class="mu" id="cnt"></div><input id="eg" placeholder="Tags, comma separated" value="${E(p.Tags)}">
+ <label><input id="ef" type="checkbox" style="width:auto" ${p.Favorite?'checked':''}> Favorite</label><div class="mu" id="dirty"></div>
+ <div class="row"><button id="sd">Save draft</button><button class="p" id="sp">Publish</button><button data-go="${S.id?'read':'all'}" data-a="${S.id||''}">Cancel</button></div>`},
+set(){const a=S.items,cnt=k=>Object.entries(a.reduce((o,p)=>(o[p[k]]=(o[p[k]]||0)+1,o),{})).map(([x,n])=>`${E(x)}: ${n}`).join(' · ');
+ return `<h1>Settings</h1><div class="c"><b>Statistics</b><br>Total ${a.length} · Favorites ${a.filter(p=>p.Favorite).length} · Drafts ${a.filter(p=>p.Status==='Draft').length} · Published ${a.filter(p=>p.Status!=='Draft').length}<br>Categories: ${cnt('Category')}<br>Languages: ${cnt('Language')}</div>
+ <div class="c row"><button id="th">Toggle dark mode</button><button id="rf">Refresh</button><button id="ej">Backup / Export JSON</button><button id="ec2">Export CSV</button><button class="d" id="lo">Log out</button></div>`}};
+function page(fav,cat){const f=S.f,a=list(fav,cat),ch=Object.entries({cat:f.cat,lang:f.lang,status:f.status,tag:f.tag&&'#'+f.tag,fav:f.fav&&(f.fav==='y'?'Favorites':'Non-favorites'),q:f.q&&'“'+f.q+'”'}).filter(x=>x[1]);
+ return `<div class="row"><input id="sq" type="search" placeholder="Search title, lines, tags…" value="${E(f.q)}"><button id="ft" style="flex:0">Filters</button></div>
+ <div class="c ${S.fp?'':'hide'}"><div class="row">${sel('fc',cats(),f.cat,'Category')}${sel('fl',['Hindi','English','Urdu','Other'],f.lang,'Language')}${sel('fs',['Draft','Published'],f.status,'Status')}</div>
+ <div class="row"><select id="ff"><option value="">All</option><option value="y" ${f.fav==='y'?'selected':''}>Favorites only</option><option value="n" ${f.fav==='n'?'selected':''}>Non-favorites</option></select>
+ <select id="so">${[['new','Newest'],['old','Oldest'],['az','A–Z'],['za','Z–A'],['upd','Recently updated']].map(([k,l])=>`<option value="${k}" ${f.sort===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
+ <div class="mu">${a.length} result${a.length==1?'':'s'} ${ch.map(([k,v])=>`<span class="chip" data-x="${k}">${E(v)} ✕</span>`).join('')}${ch.length?'<span class="chip" data-x="all">Clear all</span>':''}</div>
+ <div id="lst">${a.slice(0,S.page*30).map(card).join('')||'<div class="c mu">Nothing here yet.</div>'}</div>${a.length>S.page*30?'<button id="more" style="width:100%">Load more</button>':''}`}
+// ---- Actions ----
+async function run(fn,ok){if(busy)return;busy=true;try{await fn();await getAllPoetries();toast(ok);return true}catch(e){if(e)toast(e.message,1);return false}finally{busy=false}}
+async function save(status){const t=$('#et').value.trim(),c=$('#eb').value;if(!t||!c.trim())return toast('Title and content are required',1);
+ const d={Title:t,Category:$('#ec').value||'Other',Language:$('#el').value,Content:c,Tags:$('#eg').value,Status:status,Favorite:$('#ef').checked};
+ const dup=S.items.find(p=>p.ID!==S.id&&(p.Title.trim()===t||p.Content.trim()===c.trim()));if(dup&&!confirm('A similar poem already exists: "'+dup.Title+'". Save anyway?'))return;
+ const ok=await run(()=>S.id?updatePoetry(S.id,d):addPoetry(d),'Saved');if(ok){S.dirty=false;go('all')}}
+document.addEventListener('click',async e=>{const t=e.target,x=t.closest('[data-id],[data-go],[data-tag],[data-x],button');if(!x)return;const D=x.dataset,id=x.id;
+ if(D.id){let h=LS.g('hist',[]).filter(i=>i!==D.id);h.unshift(D.id);LS.s('hist',h.slice(0,20));return go('read',D.id)}
+ if(D.go)return go(D.go,D.a);
+ if(D.tag){S.f.tag=D.tag;LS.s('flt',S.f);return go('all')}
+ if(D.x){D.x==='all'?S.f={q:'',cat:'',lang:'',status:'',fav:'',tag:'',sort:S.f.sort}:S.f[D.x]='';LS.s('flt',S.f);return R()}
+ const p=byId(S.id);
+ if(id==='ft'){S.fp=!S.fp;R()}else if(id==='more'){S.page++;R()}
+ else if(id==='rnd'&&S.items.length)go('read',S.items[Math.random()*S.items.length|0].ID)
+ else if(id==='fs')document.body.classList.toggle('fs')
+ else if(id==='fv'&&p){await run(()=>updateFavorite(p.ID,!p.Favorite),p.Favorite?'Removed from favorites':'Added to favorites');R()}
+ else if(id==='del'&&p&&confirm('Delete "'+p.Title+'"?\nThis is permanent and cannot be undone.')){if(await run(()=>deletePoetry(p.ID),'Deleted'))go('all')}
+ else if(id==='cp'&&p){try{await navigator.clipboard.writeText(txt(p));toast('Copied')}catch{toast('Copy failed',1)}}
+ else if(id==='sh'&&p){navigator.share?navigator.share({title:p.Title,text:txt(p)}).catch(()=>{}):toast('Sharing not supported here',1)}
+ else if(id==='tx'&&p)dl(p.Title+'.txt',txt(p),'text/plain;charset=utf-8')
+ else if(id==='sd')save('Draft');else if(id==='sp')save('Published')
+ else if(id==='th'){const d=document.documentElement.dataset.t==='dark'?'':'dark';document.documentElement.dataset.t=d;LS.s('th',d)}
+ else if(id==='rf')run(()=>Promise.resolve(),'Refreshed').then(R)
+ else if(id==='ej')dl('poetry-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(S.items,null,1),'application/json')
+ else if(id==='ec2')dl('poetry.csv','\ufeff'+csv(),'text/csv;charset=utf-8')
+ else if(id==='lo')logout()});
+let tm;document.addEventListener('input',e=>{const t=e.target,id=t.id;
+ if(id==='sq'||id==='hq'){clearTimeout(tm);tm=setTimeout(()=>{S.f.q=t.value;LS.s('flt',S.f);if(id==='hq')return go('all');const pos=t.selectionStart;S.page=1;R();const n=$('#sq');n.focus();n.setSelectionRange(pos,pos)},250)}
+ else if({fc:'cat',fl:'lang',fs:'status',ff:'fav',so:'sort'}[id]){S.f[{fc:'cat',fl:'lang',fs:'status',ff:'fav',so:'sort'}[id]]=t.value;LS.s('flt',S.f);S.page=1;R()}
+ else if(id==='zs'||id==='zl'){const z={s:$('#zs').value,l:$('#zl').value};LS.s('rs',z);$('#rd').style.fontSize=z.s+'px';$('#rd').style.lineHeight=z.l}
+ else if(S.view==='edit'){S.dirty=true;$('#dirty').textContent='● Unsaved changes';const b=$('#eb').value;$('#cnt').textContent=b.length+' characters · '+(b.trim()?b.trim().split(/\s+/).length:0)+' words'}});
+document.addEventListener('keydown',e=>{const k=e.ctrlKey||e.metaKey;if(k&&e.key==='n'){e.preventDefault();go('edit')}
+ else if(k&&e.key==='f'&&$('#sq')){e.preventDefault();$('#sq').focus()}else if(e.key==='Escape')document.body.classList.remove('fs')});
+addEventListener('beforeunload',e=>{if(S.dirty){e.preventDefault();e.returnValue=''}});
+document.documentElement.dataset.t=LS.g('th','');
+if(CFG.CLIENT_ID.startsWith('PASTE')){document.body.innerHTML='<main class="c">Open index.html and fill in the CFG values first (see SETUP.md).</main>'}else initG();
+</script></body></html>

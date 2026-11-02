@@ -53,9 +53,9 @@ function initG(){if(!window.google||!google.accounts){return setTimeout(initG,30
 // ---- API service ----
 async function api(action,data){
  $('#ld').style.width='70%';
- try{const r=await fetch(CFG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:TOKEN,action,data})});
+ try{const r=await fetch(CFG.API_URL,{method:'POST',redirect:'follow',credentials:'omit',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:TOKEN,action,data})});
   const j=await r.json();if(!j.ok){if(j.error==='auth'){logout();showLogin('Session expired or unauthorized. Please sign in again.');throw 0}throw new Error(j.error)}return j}
- catch(e){if(e===0)throw e;throw new Error(e.message==='Failed to fetch'?'Network error. Check your connection and retry.':e.message)}
+ catch(e){if(e===0)throw e;throw new Error(e.message==='Failed to fetch'?'Cannot reach the backend. Check connection, and that the Apps Script deployment access is "Anyone" and the latest version is deployed.':e.message)}
  finally{$('#ld').style.width='100%';setTimeout(()=>$('#ld').style.width='0',300)}}
 const getAllPoetries=async()=>{const j=await api('list');S.items=j.data;LS.s('pc',j.data)};
 const addPoetry=d=>api('add',d),updatePoetry=(id,d)=>api('update',{...d,id}),deletePoetry=id=>api('delete',{id}),updateFavorite=(id,value)=>api('favorite',{id,value});

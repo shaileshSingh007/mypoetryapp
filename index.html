@@ -1042,8 +1042,8 @@
 
       <div class="pm-status-row">
         <select id="es" class="inp-grad">
-          <option value="Incomplete">Incomplete</option>
-          <option value="Completed">Completed</option>
+          <option value="Incomplete">Draft</option>
+          <option value="Completed">Published</option>
         </select>
         <button type="button" id="ef-toggle" class="icon-btn" style="width:38px;height:36px">
           <i class="fa fa-star-o"></i>
@@ -1498,10 +1498,10 @@
           ${f.q ? `<i id="sq-cut" class="fa fa-times-circle cut-ico"></i>` : ''}
         </div>
         <div class="row-toggles">
-          <button class="icon-btn ${f.status === 'Incomplete' ? 'on' : ''}" data-st="Incomplete" title="Draft / Incomplete">
+          <button class="icon-btn ${f.status === 'Incomplete' ? 'on' : ''}" data-st="Incomplete" title="Draft">
             <i class="fa fa-clock-o"></i>
           </button>
-          <button class="icon-btn ${f.status === 'Complete' ? 'on' : ''}" data-st="Complete" title="Published / Complete">
+          <button class="icon-btn ${f.status === 'Complete' ? 'on' : ''}" data-st="Complete" title="Published">
             <i class="fa fa-check-circle"></i>
           </button>
           <button class="icon-btn ${hasActiveFilter ? 'on' : ''}" id="open-flt" title="Filters">
@@ -1714,7 +1714,7 @@
         <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px 10px;border-bottom:1px solid var(--bd);font-size:0.82em;color:var(--mu)">
           <span>${E(p.Category)} · ${E(p.Language)}</span>
           <span style="color:${comp ? 'var(--ok)' : 'var(--g)'}">
-            <i class="fa ${comp ? 'fa-check-circle' : 'fa-clock-o'}"></i> ${comp ? 'Completed' : 'Incomplete'}
+            <i class="fa ${comp ? 'fa-check-circle' : 'fa-clock-o'}"></i> ${comp ? 'Published' : 'Draft'}
           </span>
         </div>
         <div class="reader-scroll">
@@ -1763,12 +1763,12 @@
         Language: d.Language,
         Content: d.Content,
         Tags: d.Tags.join(', '),
-        Status: d.Status === 'Completed' ? 'Complete' : 'Incomplete',
+        Status: d.Status === 'Completed' ? 'Published' : 'Draft',
         Favorite: d.Favorite
       };
 
       const editingId = S.id;
-      const wantDone = payload.Status === 'Complete';
+      const wantDone = payload.Status === 'Published';
       const ok = await run(
         () => editingId ? updatePoetry(editingId, payload) : addPoetry(payload),
         'fa-check',

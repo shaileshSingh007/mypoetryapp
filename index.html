@@ -424,7 +424,7 @@
     .poem-badge {
       position: absolute;
       top: -13px;
-      right: 12px;
+      left: 12px;
       height: 26px;
       padding: 0 10px;
       display: inline-flex;
@@ -1190,6 +1190,14 @@
       return s === 'complete' || s === 'completed' || s === 'published';
     }
 
+    // Status of a poem. If the server ever keeps a different status than the one
+    // we saved, the value you chose is remembered locally (S.ov) so the list stays correct.
+    const OV = LS.g('ov', {});
+    function isDone(p) {
+      if (p && Object.prototype.hasOwnProperty.call(OV, p.ID)) return !!OV[p.ID];
+      return isComplete(p?.Status);
+    }
+
     function toast(icon = 'fa-check', msg = '', err = false) {
       const e = $('#toast');
       e.innerHTML = `<i class="fa ${icon}"></i>${msg ? `<span>${E(msg)}</span>` : ''}`;
@@ -1376,7 +1384,7 @@
     function filteredList() {
       const f = S.f, q = f.q.toLowerCase();
       let a = S.items.filter(p => {
-        const comp = isComplete(p.Status);
+        const comp = isDone(p);
         // Anything that is not complete counts as a draft (Incomplete / Draft / empty)
         const matchStatus = !f.status || (f.status === 'Complete' ? comp : !comp);
         const matchFav = !f.fav || p.Favorite;
@@ -1433,7 +1441,7 @@
           Language: p.Language || 'Hindi',
           Content: p.Content || '',
           Tags: String(p.Tags || '').split(',').map(x => x.trim()).filter(Boolean),
-          Status: isComplete(p.Status) ? 'Completed' : 'Incomplete',
+          Status: isDone(p) ? 'Completed' : 'Incomplete',
           Favorite: !!p.Favorite,
           fontSize: S.draft.fontSize || 18
         };
@@ -1526,12 +1534,12 @@
         <div class="poetry-first-row">${firstRowHTML}</div>
         <div class="poetry-list-scroll">
           ${list.map(p => {
-            const comp = isComplete(p.Status);
+            const comp = isDone(p);
             const firstLine = String(p.Content || '').split('\n').find(l => l.trim()) || '...';
             return `
               <div class="poem-card grad-box ${comp ? 'done' : 'draft'}" data-read="${E(p.ID)}">
                 <div class="poem-badge">
-                  <span class="pb-num">#${numMap[p.ID] || ''}</span>
+                  <span class="pb-num">${numMap[p.ID] || ''}</span>
                   <i class="fa ${comp ? 'fa-check-circle' : 'fa-clock-o'}" style="color:${comp ? 'var(--ok)' : 'var(--g)'}"></i>
                   <i class="fa ${p.Favorite ? 'fa-star' : 'fa-star-o'}" style="color:${p.Favorite ? 'var(--g)' : 'var(--mu)'}"></i>
                 </div>
@@ -1701,7 +1709,7 @@
       const p = byId(S.id);
       if (!p) return `<div style="margin:auto;color:var(--mu)">Not found</div>`;
       const z = LS.g('rs', 20);
-      const comp = isComplete(p.Status);
+      const comp = isDone(p);
       return `
         <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px 10px;border-bottom:1px solid var(--bd);font-size:0.82em;color:var(--mu)">
           <span>${E(p.Category)} · ${E(p.Language)}</span>
@@ -1759,11 +1767,25 @@
         Favorite: d.Favorite
       };
 
+      const editingId = S.id;
+      const wantDone = payload.Status === 'Complete';
       const ok = await run(
-        () => S.id ? updatePoetry(S.id, payload) : addPoetry(payload),
+        () => editingId ? updatePoetry(editingId, payload) : addPoetry(payload),
         'fa-check',
         'Saved'
       );
+      if (ok && editingId) {
+        const saved = byId(editingId);
+        if (saved && isComplete(saved.Status) !== wantDone) {
+          // Server did not keep the chosen status: remember it locally and warn
+          OV[editingId] = wantDone;
+          LS.s('ov', OV);
+          setTimeout(() => toast('fa-exclamation-circle', 'Server kept "' + (saved.Status || 'empty') + '"', true), 2100);
+        } else if (OV[editingId] !== undefined) {
+          delete OV[editingId];
+          LS.s('ov', OV);
+        }
+      }
       if (ok) go('poetry');
       return ok;
     }

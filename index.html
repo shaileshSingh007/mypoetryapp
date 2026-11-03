@@ -28,17 +28,40 @@
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100dvh;
+      height: 100%;
       overflow: hidden;
       background: var(--bg);
       color: var(--tx);
       font: 15px/1.5 'Inter', sans-serif;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* Tactile Click Effect for All Interactive Controls */
+    button, .icon-btn, .tab-btn, .act-btn, .font-btn, .gh-btn {
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    button:active:not(:disabled),
+    .icon-btn:active,
+    .tab-btn:active,
+    .act-btn:active,
+    .font-btn:active,
+    .gh-btn:active:not(:disabled) {
+      transform: scale(0.88) !important;
+      filter: brightness(1.25);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
     }
 
     /* Gradient Border Utility */
@@ -185,14 +208,15 @@
       font-size: 1.15em;
       font-weight: 600;
       color: var(--g2);
-      letter-spacing: 0.5px;
     }
 
-    /* ===== MAIN APP CONTAINER (NO OUTER SCROLL) ===== */
+    /* ===== MAIN APP CONTAINER (LOCKED TO INITIAL VIEWPORT SO KEYPAD DOES NOT PUSH BOTTOM ROWS UP) ===== */
     #app {
       max-width: 460px;
       margin: 0 auto;
-      height: 100dvh;
+      height: var(--app-h, 100vh);
+      min-height: var(--app-h, 100vh);
+      max-height: var(--app-h, 100vh);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -463,31 +487,73 @@
       flex: 1;
       position: relative;
       display: flex;
+      flex-direction: column;
       overflow: hidden;
       background: var(--surface);
       border-radius: 12px;
+      min-height: 180px;
     }
 
-    /* Floating Transparent +A / -A Top Right */
-    .font-float {
-      position: absolute;
-      top: 7px;
-      right: 44px;
-      z-index: 10;
+    /* Top Row inside Content Card: Title (Top-Left) + Font Size Icons (Top-Right) */
+    .editor-top-bar {
+      flex-shrink: 0;
       display: flex;
-      gap: 4px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 10px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.16);
+      background: rgba(11, 11, 14, 0.45);
+      z-index: 15;
+    }
+
+    #et {
+      flex: 1;
+      min-width: 0;
+      height: 30px;
+      background: transparent;
+      border: none;
+      color: var(--g2);
+      font-family: 'Cormorant Garamond', 'Noto Serif Devanagari', serif;
+      font-size: 1.18em;
+      font-weight: 600;
+      padding: 0 4px;
+      outline: none;
+    }
+
+    #et::placeholder {
+      color: var(--mu);
+      font-weight: 400;
+    }
+
+    .font-float {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
     .font-btn {
-      background: rgba(11, 11, 14, 0.55);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(212, 175, 55, 0.28);
+      min-width: 34px;
+      height: 28px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.32);
       color: var(--g2);
-      border-radius: 6px;
-      padding: 2px 7px;
-      font-size: 0.72em;
+      border-radius: 7px;
+      padding: 0 8px;
+      font-size: 0.78em;
       font-weight: 600;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .editor-body-wrap {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
     }
 
     /* Main Content Textarea */
@@ -497,7 +563,7 @@
       background: transparent;
       border: none;
       color: var(--tx);
-      padding: 12px 12px;
+      padding: 10px 12px;
       font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', Georgia, serif;
       font-size: 18px;
       line-height: 1.75;
@@ -514,7 +580,7 @@
       width: 36px;
       background: rgba(0, 0, 0, 0.28);
       border-left: 1px solid var(--bd);
-      padding: 12px 2px;
+      padding: 10px 2px;
       overflow: hidden;
       text-align: center;
       font-family: 'Inter', monospace;
@@ -528,26 +594,27 @@
     .meter-line {
       display: block;
       font-size: 0.65em;
-      line-height: 2.69; /* Synced visually with 1.75em line height */
+      line-height: 2.69;
       color: var(--g);
       opacity: 0.85;
       white-space: nowrap;
     }
 
-    /* After Input Field: Two Rows */
-    .meta-row-1 {
+    /* Bottom Row 1: Type, Language, Status, Favourite in One Row */
+    .meta-row-controls {
       flex-shrink: 0;
       display: grid;
-      grid-template-columns: 1.3fr 1fr 0.9fr;
+      grid-template-columns: 1fr 1fr 1.05fr 36px;
       gap: 6px;
+      align-items: center;
     }
 
-    .meta-row-2 {
+    /* Bottom Row 2: Tags Full Width Horizontal Scroll */
+    .meta-row-tags {
       flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 6px;
-      height: 38px;
+      height: 36px;
     }
 
     .inp-grad {
@@ -556,8 +623,8 @@
       border: 1px solid rgba(212, 175, 55, 0.28);
       border-radius: 9px;
       color: var(--tx);
-      padding: 0 9px;
-      font-size: 0.83em;
+      padding: 0 7px;
+      font-size: 0.8em;
       outline: none;
       width: 100%;
     }
@@ -567,9 +634,9 @@
       box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
     }
 
-    /* Tags 60% Width Horizontal Scroll Container */
+    /* Tags Horizontal Scroll Container */
     .tags-scroll-box {
-      width: 60%;
+      width: 100%;
       height: 36px;
       background: var(--surface);
       border: 1px solid rgba(212, 175, 55, 0.28);
@@ -577,7 +644,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      padding: 0 7px;
+      padding: 0 8px;
       overflow-x: auto;
       overflow-y: hidden;
       white-space: nowrap;
@@ -710,6 +777,86 @@
       color: #fff;
     }
 
+    /* Poetic Publishing Overlay Screen */
+    #pub-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 11, 14, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .pub-orb {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,175,55,0.22), transparent 70%);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+    }
+
+    .pub-orb::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--g);
+      border-right-color: var(--g2);
+      animation: spinGlow 1s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+    }
+
+    .pub-orb i {
+      font-size: 1.8em;
+      color: var(--g2);
+      animation: quillWrite 1.2s ease-in-out infinite;
+    }
+
+    @keyframes quillWrite {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(3px, -4px) rotate(-12deg); }
+    }
+
+    .pub-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35em;
+      font-style: italic;
+      color: var(--g2);
+      letter-spacing: 0.8px;
+    }
+
+    .pub-bar {
+      width: 140px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pub-bar::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      background: linear-gradient(90deg, transparent, var(--g), var(--g2));
+      animation: shimmerBar 1.1s infinite ease-in-out;
+    }
+
+    @keyframes shimmerBar {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(240%); }
+    }
+
     /* Loader & Toast */
     #ld {
       position: fixed;
@@ -756,6 +903,15 @@
 
   <div id="ld"></div>
   <div id="toast"><i class="fa fa-check"></i><span id="toast-msg"></span></div>
+
+  <!-- Publishing Animated Screen -->
+  <div id="pub-overlay" class="hide">
+    <div class="pub-orb">
+      <i class="fa fa-pencil"></i>
+    </div>
+    <div class="pub-text" id="pub-status-txt">Inscribing into your Diwan...</div>
+    <div class="pub-bar"></div>
+  </div>
 
   <!-- GitHub-Style Dual Authentication Delete Modal -->
   <div id="gh-modal" class="hide">
@@ -816,12 +972,49 @@
       s: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
     };
 
-    // Common English, Hinglish & Hindi Stopwords/Prepositions for Auto-Tagging
+    // Lock initial viewport height so mobile keyboard never pushes bottom controls up
+    const INIT_VH = window.innerHeight;
+    document.documentElement.style.setProperty('--app-h', INIT_VH + 'px');
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px');
+      }, 200);
+    });
+
+    // Prevent Double-Click / Double-Tap Zoom Everywhere
+    document.addEventListener('dblclick', e => {
+      e.preventDefault();
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', e => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
+    // Common English, Hinglish & Hindi Stopwords, Prepositions & Verbs for Auto-Tagging
     const STOP_WORDS = new Set([
+      // English prepositions, pronouns & common verbs
       'the','and','for','that','this','with','you','not','are','from','your','have','was','will','but','all','can','her','his','one','our','out','day','get','has','him','how','man','new','now','old','see','two','way','who','boy','did','its','let','put','say','she','too','use','into','over','after','under','between','through','during','before','without','within','along','across','behind','beyond','about','above','below','upon','unto','amid','among',
+      'make','made','take','took','come','came','know','knew','think','thought','look','want','give','gave','find','found','tell','told','work','call','try','tried','ask','need','feel','felt','become','leave','left','mean','keep','kept','begin','seem','help','talk','turn','start','show','hear','heard','play','run','move','like','live','believe','hold','bring','happen','write','provide','sit','stand','lose','pay','meet','include','continue','set','learn','change','lead','understand','watch','follow','stop','create','speak','read','allow','add','spend','grow','open','walk','win','offer','remember','love','consider','appear','buy','wait','serve','die','send','expect','build','stay','fall','cut','reach','kill','remain',
+      // Roman Hindi / Hinglish prepositions, pronouns & verbs (karna, marna, rahne, etc.)
       'hai','hain','tha','the','thi','aur','mein','main','hum','tum','aap','kya','kyun','kab','kahan','kaise','apna','apni','apne','tera','teri','tere','mera','meri','mere','uska','uski','uske','iska','iski','iske','yeh','woh','jab','tab','ab','bhi','toh','par','pe','se','ko','ka','ki','ke','ne','hi','jo','koi','kuch','sab','ek','do','naya','nayi','liye','saath','bina','andar','bahar','upar','neeche',
-      'है','हैं','था','थे','थी','और','में','मैं','हम','तुम','आप','क्या','क्यों','कब','कहाँ','कैसे','अपना','अपनी','अपने','तेरा','तेरी','तेरे','मेरा','मेरी','मेरे','उसका','उसकी','उसके','इसका','इसकी','इसके','यह','वह','ये','वो','जब','तब','अब','भी','तो','पर','पे','से','को','का','की','के','ने','ही','जो','कोई','कुछ','सब','एक','दो','लिए','साथ','बिना','अंदर','बाहर','ऊपर','नीचे','कर','किया','गया','रहा','रही','रहे','हो','हुआ','हुई'
+      'kar','kara','kari','kare','karo','karna','karni','karne','karta','karti','karte','kiya','kiye','karenge','mar','mara','mari','mare','maro','marna','marni','marne','marta','marti','marte','rah','raha','rahi','rahe','raho','rahna','rahni','rahne','reh','rehta','rehti','rehte','rehna','rehne','de','do','diya','diye','dena','dene','deta','deti','dete','le','lo','liya','liye','lena','lene','leta','leti','lete','aa','aaya','aayi','aaye','aana','aane','aata','aati','aate','ja','jaa','gaya','gayi','gaye','jana','jaana','jane','jaane','jata','jati','jate','ho','hua','hui','hue','hona','hone','hota','hoti','hote','ban','bana','bani','bane','banna','banne','kaha','kahi','kahe','kahna','kehna','kehne','dekha','dekhi','dekhe','dekhna','dekhne','suna','suni','sune','sunna','sunne','chala','chali','chale','chalna','chalne','mila','mili','mile','milna','milne','rakh','rakha','rakhi','rakhe','rakhna','rakhne','soch','socha','sochna','samajh','samajhna','bata','batana','pata','laga','lagi','lage','lagna','lagne','chah','chaha','chahiye','chahta','chahti','chahte','sakta','sakti','sakte','chuka','chuki','chuke','paya','payi','paye','pana',
+      // Devanagari Hindi prepositions, pronouns & verbs
+      'है','हैं','था','थे','थी','और','में','मैं','हम','तुम','आप','क्या','क्यों','कब','कहाँ','कैसे','अपना','अपनी','अपने','तेरा','तेरी','तेरे','मेरा','मेरी','मेरे','उसका','उसकी','उसके','इसका','इसकी','इसके','यह','वह','ये','वो','जब','तब','अब','भी','तो','पर','पे','से','को','का','की','के','ने','ही','जो','कोई','कुछ','सब','एक','दो','लिए','साथ','बिना','अंदर','बाहर','ऊपर','नीचे',
+      'कर','करा','करी','करे','करो','करना','करनी','करने','करता','करती','करते','किया','किये','किए','मर','मरा','मरी','मरे','मरो','मरना','मरनी','मरने','मरता','मरती','मरते','रह','रहा','रही','रहे','रहो','रहना','रहनी','रहने','रहता','रहती','रहते','दे','दो','दिया','दिये','दिए','देना','देनी','देने','देता','देती','देते','ले','लो','लिया','लिये','लिए','लेना','लेनी','लेने','लेता','लेती','लेते','आ','आया','आयी','आई','आये','आए','आना','आने','आता','आती','आते','जा','गया','गयी','गई','गये','गए','जाना','जाने','जाता','जाती','जाते','हो','हुआ','हुई','हुए','होना','होने','होता','होती','होते','बन','बना','बनी','बने','बनना','बनने','कहा','कही','कहे','कहना','कहने','देखा','देखी','देखे','देखना','देखने','सुना','सुनी','सुने','सुनना','सुनने','चला','चली','चले','चलना','चलने','मिला','मिली','मिले','मिलना','मिलने','रख','रखा','रखी','रखे','रखना','रखने','सोच','सोचा','सोचना','समझ','समझना','लगा','लगी','लगे','लगना','लगने','चाह','चाहा','चाहिए','चाहता','चाहती','चाहते','सकता','सकती','सकते','चुका','चुकी','चुके','पाया','पायी','पाए','पाना','पाने','बोल','बोला','बोलना','लिख','लिखा','लिखना','पढ़','पढ़ा','पढ़ना','बैठ','बैठा','बैठना','उठ','उठा','उठना','रो','रोया','रोना','हँस','हँसना','जी','जिया','जीना'
     ]);
+
+    function isLikelyVerb(word) {
+      if (STOP_WORDS.has(word)) return true;
+      // Filter common Hindi/Hinglish verb inflections
+      if (/^(kar|mar|rah|reh|dekh|sun|chal|mil|rakh|soch|samajh|lag|chah|sak|chuk|bol|likh|padh|baith|uth)(na|ni|ne|ta|ti|te|a|i|e|o|ungi|unga|enge)$/i.test(word)) return true;
+      if (/(ना|नी|ने|ता|ती|ते|ऊँगा|ऊँगी|एंगे|एगा|एगी)$/.test(word) && word.length <= 6) return true;
+      return false;
+    }
 
     const S = {
       items: [],
@@ -911,10 +1104,10 @@
     // ---- Auto Tag Extractor from Content ----
     function extractSmartTags(content, existingTags = []) {
       const words = String(content || '')
-        .replace(/[.,!?;:"'()\[\]{}|\\/<>~`@#$%^&*_+=—–-]+/g, ' ')
+        .replace(/[.,!?;:"'()\[\]{}|\\/<>~`@#$%^&*_+=—–\-।॥]+/g, ' ')
         .split(/\s+/)
         .map(w => w.trim().toLowerCase())
-        .filter(w => w.length >= 3 && !STOP_WORDS.has(w) && isNaN(w));
+        .filter(w => w.length >= 3 && !isLikelyVerb(w) && isNaN(w));
 
       const freq = {};
       words.forEach(w => freq[w] = (freq[w] || 0) + 1);
@@ -1194,40 +1387,44 @@
 
       return `
         <div class="create-wrap">
-          <!-- First: Content Input Field + Top-Right Font Controls + Right Meter Bar -->
+          <!-- First: Content Input Field with Title (Top-Left) & Font Size Icons (Top-Right) -->
           <div class="editor-container grad-box">
-            <div class="font-float">
-              <button class="font-btn" id="cr-fdec" type="button">-A</button>
-              <button class="font-btn" id="cr-finc" type="button">+A</button>
+            <div class="editor-top-bar">
+              <input id="et" placeholder="tittle" value="${E(d.Title)}" autocomplete="off">
+              <div class="font-float">
+                <button class="font-btn" id="cr-fdec" type="button">-A</button>
+                <button class="font-btn" id="cr-finc" type="button">+A</button>
+              </div>
             </div>
-            <textarea id="eb" style="font-size:${d.fontSize}px" placeholder="उतरने दो काग़ज़ पर रूह के अल्फ़ाज़...">${E(d.Content)}</textarea>
-            <div id="meter-col" class="meter-bar ${showMeter ? '' : 'hide'}" title="Matra / Meter Count per line"></div>
+            <div class="editor-body-wrap">
+              <textarea id="eb" style="font-size:${d.fontSize}px" placeholder="उतरने दो काग़ज़ पर रूह के अल्फ़ाज़...">${E(d.Content)}</textarea>
+              <div id="meter-col" class="meter-bar ${showMeter ? '' : 'hide'}" style="font-size:${d.fontSize}px" title="Matra / Meter Count per line"></div>
+            </div>
           </div>
 
-          <!-- Row 1 after Input: Title, Type Dropdown, Language Dropdown -->
-          <div class="meta-row-1">
-            <input id="et" class="inp-grad" placeholder="tittle" value="${E(d.Title)}">
+          <!-- Bottom Row 1: Type, Language, Status, and Favourite in One Row -->
+          <div class="meta-row-controls">
             <select id="ec" class="inp-grad">
               ${types.map(t => `<option value="${t}" ${d.Category.toLowerCase() === t.toLowerCase() ? 'selected' : ''}>${t}</option>`).join('')}
             </select>
             <select id="el" class="inp-grad">
               ${langs.map(l => `<option value="${l}" ${d.Language === l ? 'selected' : ''}>${l}</option>`).join('')}
             </select>
-          </div>
-
-          <!-- Row 2 after Input: Tags (60% width horizontal scroll), Status Dropdown, Favorite Toggle -->
-          <div class="meta-row-2">
-            <div class="tags-scroll-box" id="tag-box">
-              ${renderTagChips()}
-              <input id="tag-inp" class="tag-inline-inp" placeholder="+tag,">
-            </div>
-            <select id="es" class="status-sel">
+            <select id="es" class="inp-grad">
               <option value="Incomplete" ${d.Status === 'Incomplete' ? 'selected' : ''}>Incomplete</option>
               <option value="Completed" ${d.Status === 'Completed' ? 'selected' : ''}>Completed</option>
             </select>
             <button type="button" id="ef-toggle" class="icon-btn ${d.Favorite ? 'on' : ''}">
               <i class="fa ${d.Favorite ? 'fa-star' : 'fa-star-o'}"></i>
             </button>
+          </div>
+
+          <!-- Bottom Row 2: Tags in Next Row -->
+          <div class="meta-row-tags">
+            <div class="tags-scroll-box" id="tag-box">
+              ${renderTagChips()}
+              <input id="tag-inp" class="tag-inline-inp" placeholder="+tag,">
+            </div>
           </div>
         </div>`;
     }
@@ -1373,6 +1570,30 @@
       if (ok) go('poetry');
     }
 
+    async function publishWithScreen() {
+      const d = S.draft;
+      d.Title = ($('#et')?.value || '').trim();
+      d.Category = $('#ec')?.value || 'Kavita';
+      d.Language = $('#el')?.value || 'Hindi';
+      d.Content = $('#eb')?.value || '';
+      d.Status = $('#es')?.value || 'Incomplete';
+
+      if (!d.Title || !d.Content.trim()) {
+        return toast('fa-exclamation', 'Title & verse needed', true);
+      }
+
+      const ov = $('#pub-overlay');
+      const stTxt = $('#pub-status-txt');
+      stTxt.textContent = d.Status === 'Completed' ? 'Immortalizing your verses...' : 'Preserving your draft...';
+      ov.classList.remove('hide');
+
+      try {
+        await saveCreation();
+      } finally {
+        ov.classList.add('hide');
+      }
+    }
+
     // ---- GitHub Dual-Auth Delete Setup ----
     function openDualAuthDelete(poemId) {
       const p = byId(poemId);
@@ -1485,9 +1706,13 @@
         R();
       }
       else if (id === 'cr-finc' || id === 'cr-fdec') {
-        S.draft.fontSize = Math.min(30, Math.max(13, S.draft.fontSize + (id === 'cr-finc' ? 2 : -2)));
+        e.preventDefault();
+        e.stopPropagation();
+        S.draft.fontSize = Math.min(32, Math.max(12, S.draft.fontSize + (id === 'cr-finc' ? 2 : -2)));
         const eb = $('#eb');
+        const mc = $('#meter-col');
         if (eb) eb.style.fontSize = S.draft.fontSize + 'px';
+        if (mc) mc.style.fontSize = S.draft.fontSize + 'px';
       }
       else if (id === 'ef-toggle') {
         S.draft.Favorite = !S.draft.Favorite;
@@ -1495,14 +1720,16 @@
         btn.innerHTML = `<i class="fa ${S.draft.Favorite ? 'fa-star' : 'fa-star-o'}"></i>`;
       }
       else if (id === 'save-btn') {
-        saveCreation();
+        publishWithScreen();
       }
       else if (id === 'rf-btn') {
         run(() => Promise.resolve(), 'fa-refresh', 'Synced').then(R);
       }
       else if (id === 'rd-inc' || id === 'rd-dec') {
-        let z = LS.g('rs', 20);
-        z = Math.min(32, Math.max(14, z + (id === 'rd-inc' ? 2 : -2)));
+        e.preventDefault();
+        e.stopPropagation();
+        let z = Number(LS.g('rs', 20)) || 20;
+        z = Math.min(34, Math.max(13, z + (id === 'rd-inc' ? 2 : -2)));
         LS.s('rs', z);
         const rd = $('#rd');
         if (rd) rd.style.fontSize = z + 'px';

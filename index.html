@@ -491,7 +491,19 @@
       overflow: hidden;
       background: var(--surface);
       border-radius: 12px;
-      min-height: 180px;
+      min-height: 80px;
+      transition: max-height 0.15s ease, flex 0.15s ease;
+    }
+
+    /* When Mobile Keypad is Open: Collapse Only the Content Input Field Above Keypad, Keep Bottom Rows Below */
+    body.kb-open .editor-container {
+      flex: 0 0 calc(var(--vv-h, 55vh) - 70px) !important;
+      max-height: calc(var(--vv-h, 55vh) - 70px) !important;
+    }
+
+    body.kb-open .meta-row-controls,
+    body.kb-open .meta-row-tags {
+      margin-top: auto;
     }
 
     /* Top Row inside Content Card: Title (Top-Left) + Font Size Icons (Top-Right) */
@@ -540,13 +552,14 @@
       border: 1px solid rgba(212, 175, 55, 0.32);
       color: var(--g2);
       border-radius: 7px;
-      padding: 0 8px;
+      padding: 0 7px;
       font-size: 0.78em;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 3px;
     }
 
     .editor-body-wrap {
@@ -950,7 +963,7 @@
 
     <!-- Personal Curator Stamp -->
     <div class="curator-stamp">
-      <div class="stamp-seal"><i class="fa fa-feather"></i>✦</div>
+      <div class="stamp-seal"><i class="fa fa-pencil"></i></div>
       <div class="stamp-details">
         <span class="stamp-label">Personal Diwan of</span>
         <span class="stamp-owner">Shailesh R. C. Singh</span>
@@ -975,11 +988,43 @@
     // Lock initial viewport height so mobile keyboard never pushes bottom controls up
     const INIT_VH = window.innerHeight;
     document.documentElement.style.setProperty('--app-h', INIT_VH + 'px');
+
+    // Track VisualViewport so ONLY the content editor collapses above the keypad while bottom rows stay below
+    function syncKeypadHeight() {
+      const vvH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--vv-h', vvH + 'px');
+      const isKb = vvH < INIT_VH * 0.82;
+      document.body.classList.toggle('kb-open', isKb);
+      if (window.visualViewport && isKb) {
+        window.scrollTo(0, 0);
+      }
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncKeypadHeight);
+      window.visualViewport.addEventListener('scroll', () => window.scrollTo(0, 0));
+    }
+    window.addEventListener('resize', syncKeypadHeight);
+
     window.addEventListener('orientationchange', () => {
       setTimeout(() => {
         document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px');
+        syncKeypadHeight();
       }, 200);
     });
+
+    // Clean & Reformat Copied Poetry Text Before Paste
+    function reformatPoetryText(raw) {
+      return String(raw || '')
+        .replace(/\r\n|\r/g, '\n')
+        .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '') // remove zero-width & soft-hyphen artifacts
+        .replace(/\u00A0/g, ' ') // normalize non-breaking spaces
+        .replace(/[ \t]+/g, ' ') // collapse multiple horizontal spaces
+        .split('\n')
+        .map(line => line.trim()) // clean leading/trailing spaces on each verse line
+        .join('\n')
+        .replace(/\n{3,}/g, '\n\n') // preserve stanza breaks (max 1 empty line between stanzas)
+        .trim();
+    }
 
     // Prevent Double-Click / Double-Tap Zoom Everywhere
     document.addEventListener('dblclick', e => {
@@ -1243,10 +1288,10 @@
       h.innerHTML = `
         <div class="top-tabs">
           <button class="tab-btn ${S.view === 'poetry' ? 'on' : ''}" data-go="poetry">
-            <i class="fa fa-book"></i> Poetry
+            <i class="fa fa-book"></i>
           </button>
           <button class="tab-btn ${S.view === 'create' ? 'on' : ''}" data-go="create">
-            <i class="fa fa-feather"></i>✦ Create
+            <i class="fa fa-pencil-square-o"></i>
           </button>
         </div>
         ${S.view === 'create'
@@ -1392,8 +1437,8 @@
             <div class="editor-top-bar">
               <input id="et" placeholder="tittle" value="${E(d.Title)}" autocomplete="off">
               <div class="font-float">
-                <button class="font-btn" id="cr-fdec" type="button">-A</button>
-                <button class="font-btn" id="cr-finc" type="button">+A</button>
+                <button class="font-btn" id="cr-fdec" type="button"><i class="fa fa-minus"></i><i class="fa fa-font"></i></button>
+                <button class="font-btn" id="cr-finc" type="button"><i class="fa fa-plus"></i><i class="fa fa-font"></i></button>
               </div>
             </div>
             <div class="editor-body-wrap">
@@ -1481,7 +1526,31 @@
 
     function bindCreateEvents() {
       const eb = $('#eb');
+      const et = $('#et');
+      if (et) {
+        et.onpaste = e => {
+          e.preventDefault();
+          const pasted = (e.clipboardData || window.clipboardData).getData('text');
+          const clean = reformatPoetryText(pasted).replace(/\n+/g, ' ');
+          const start = et.selectionStart, end = et.selectionEnd;
+          et.value = et.value.slice(0, start) + clean + et.value.slice(end);
+          et.selectionStart = et.selectionEnd = start + clean.length;
+          S.draft.Title = et.value;
+        };
+      }
       if (eb) {
+        eb.onpaste = e => {
+          e.preventDefault();
+          const pasted = (e.clipboardData || window.clipboardData).getData('text');
+          const clean = reformatPoetryText(pasted);
+          const start = eb.selectionStart, end = eb.selectionEnd;
+          eb.value = eb.value.slice(0, start) + clean + eb.value.slice(end);
+          eb.selectionStart = eb.selectionEnd = start + clean.length;
+          S.draft.Content = eb.value;
+          updateMeterBar();
+          S.draft.Tags = extractSmartTags(eb.value, S.draft.Tags);
+          refreshTagBox();
+        };
         eb.onscroll = () => {
           const col = $('#meter-col');
           if (col) col.scrollTop = eb.scrollTop;

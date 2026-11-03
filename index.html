@@ -439,13 +439,13 @@
     }
 
     .poem-sub {
-      margin: 2px 0 0;
-      font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', serif;
-      font-size: 0.92em;
+      margin: 3px 0 0;
+      font-size: 0.82em;
       color: var(--mu);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-family: 'Noto Serif Devanagari', Georgia, serif;
     }
 
     .poem-actions {
@@ -460,17 +460,23 @@
       height: 32px;
       border-radius: 8px;
       border: 1px solid var(--bd);
-      background: rgba(255,255,255,0.02);
+      background: var(--surface-2);
       color: var(--mu);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      padding: 0;
     }
 
-    .act-btn.del:hover, .act-btn.del:active {
+    .act-btn:hover {
+      color: var(--tx);
+      border-color: var(--g);
+    }
+
+    .act-btn.del:hover {
       color: var(--danger);
-      border-color: rgba(224, 82, 70, 0.4);
+      border-color: var(--danger);
     }
 
     /* ===== CREATE TAB ===== */
@@ -478,32 +484,86 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 8px;
       overflow: hidden;
+      min-height: 0;
     }
 
-    /* Editor + Meter Box */
     .editor-container {
       flex: 1;
-      position: relative;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: var(--surface);
-      border-radius: 12px;
-      min-height: 80px;
-      transition: max-height 0.15s ease, flex 0.15s ease;
+      min-height: 0;
     }
 
-    /* When Mobile Keypad is Open: Collapse Only the Content Input Field Above Keypad, Keep Bottom Rows Below */
+    /* When Mobile Keypad is Open: Collapse Only the Content Input Field Above Keypad */
     body.kb-open .editor-container {
-      flex: 0 0 calc(var(--vv-h, 55vh) - 70px) !important;
-      max-height: calc(var(--vv-h, 55vh) - 70px) !important;
+      flex: 0 0 calc(var(--vv-h, 55vh) - 64px) !important;
+      max-height: calc(var(--vv-h, 55vh) - 64px) !important;
     }
 
-    body.kb-open .meta-row-controls,
-    body.kb-open .meta-row-tags {
-      margin-top: auto;
+    /* Publish Metadata Popup Modal */
+    #pub-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(6px);
+      z-index: 105;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .pm-box {
+      width: 100%;
+      max-width: 360px;
+      padding: 18px;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pm-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--g2);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1.25em;
+      letter-spacing: 0.5px;
+    }
+
+    .pm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .pm-status-row {
+      display: grid;
+      grid-template-columns: 1fr 38px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pm-pub-btn {
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--g);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.28), rgba(212, 175, 55, 0.12));
+      color: var(--g2);
+      font-weight: 600;
+      font-size: 0.92em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-top: 2px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
     }
 
     /* Top Row inside Content Card: Title (Top-Left) + Font Size Icons (Top-Right) */
@@ -870,18 +930,7 @@
       100% { transform: translateX(240%); }
     }
 
-    /* Loader & Toast */
-    #ld {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--g), #fff);
-      width: 0;
-      transition: width 0.25s;
-      z-index: 120;
-    }
-
+    /* Toast */
     #toast {
       position: fixed;
       bottom: 20px;
@@ -914,10 +963,9 @@
     };
   </script>
 
-  <div id="ld"></div>
   <div id="toast"><i class="fa fa-check"></i><span id="toast-msg"></span></div>
 
-  <!-- Publishing Animated Screen -->
+  <!-- Universal Fullscreen Poetic Loader Overlay -->
   <div id="pub-overlay" class="hide">
     <div class="pub-orb">
       <i class="fa fa-pencil"></i>
@@ -939,6 +987,42 @@
       <input id="gh-inp" class="inp-grad" placeholder="Type exact title to confirm..." autocomplete="off">
       <button id="gh-confirm" class="gh-btn" disabled>
         <i class="fa fa-trash-o"></i> Confirm Permanent Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Centered Publish Metadata Modal (Tags First, Then Metadata, Then Publish Button) -->
+  <div id="pub-modal" class="hide">
+    <div class="pm-box grad-box">
+      <div class="pm-head">
+        <span><i class="fa fa-bookmark-o"></i>&nbsp; Publish Details</span>
+        <i id="pm-close" class="fa fa-times" style="cursor:pointer;color:var(--mu);font-size:0.85em"></i>
+      </div>
+
+      <!-- 1. First: Tags -->
+      <div class="meta-row-tags">
+        <div class="tags-scroll-box" id="tag-box"></div>
+      </div>
+
+      <!-- 2. Then: All Other Metadata -->
+      <div class="pm-grid">
+        <select id="ec" class="inp-grad"></select>
+        <select id="el" class="inp-grad"></select>
+      </div>
+
+      <div class="pm-status-row">
+        <select id="es" class="inp-grad">
+          <option value="Incomplete">Incomplete</option>
+          <option value="Completed">Completed</option>
+        </select>
+        <button type="button" id="ef-toggle" class="icon-btn" style="width:38px;height:36px">
+          <i class="fa fa-star-o"></i>
+        </button>
+      </div>
+
+      <!-- 3. Publish Button -->
+      <button type="button" id="pm-publish-btn" class="pm-pub-btn">
+        <i class="fa fa-paper-plane"></i> Publish
       </button>
     </div>
   </div>
@@ -1201,9 +1285,37 @@
       else { showLogin(); google.accounts.id.prompt(); }
     }
 
+    // ---- Universal Fullscreen Loader Helper ----
+    let loaderDepth = 0;
+    function showLoader(msg) {
+      const ov = $('#pub-overlay');
+      const stTxt = $('#pub-status-txt');
+      if (msg && stTxt) stTxt.textContent = msg;
+      loaderDepth++;
+      if (ov) ov.classList.remove('hide');
+    }
+
+    function hideLoader() {
+      loaderDepth = Math.max(0, loaderDepth - 1);
+      if (loaderDepth === 0) {
+        const ov = $('#pub-overlay');
+        if (ov) ov.classList.add('hide');
+      }
+    }
+
+    function actionLoaderText(action, data) {
+      if (action === 'list') return 'Awakening your Diwan...';
+      if (action === 'delete') return 'Releasing verses to the wind...';
+      if (action === 'favorite') return 'Adorning your verse...';
+      if (action === 'add' || action === 'update') {
+        return isComplete(data?.Status) ? 'Immortalizing your verses...' : 'Preserving your draft...';
+      }
+      return 'Inscribing into your Diwan...';
+    }
+
     // ---- API Service ----
     async function api(action, data) {
-      $('#ld').style.width = '75%';
+      showLoader(actionLoaderText(action, data));
       try {
         const r = await fetch(CFG.API_URL, {
           method: 'POST',
@@ -1226,8 +1338,7 @@
         if (e === 0) throw e;
         throw new Error('Offline');
       } finally {
-        $('#ld').style.width = '100%';
-        setTimeout(() => $('#ld').style.width = '0', 260);
+        hideLoader();
       }
     }
 
@@ -1427,12 +1538,10 @@
     function viewCreate() {
       const d = S.draft;
       const showMeter = d.Language === 'Hindi' || d.Language === 'Urdu';
-      const types = ['Kavita', 'Poetry', 'Ghazal', 'Nazm', 'Shayari', 'Geet', 'Free Verse'];
-      const langs = ['Hindi', 'English', 'Hinglish'];
 
       return `
         <div class="create-wrap">
-          <!-- First: Content Input Field with Title (Top-Left) & Font Size Icons (Top-Right) -->
+          <!-- Full-Height Content Input Field with Title (Top-Left) & Font Size Icons (Top-Right) -->
           <div class="editor-container grad-box">
             <div class="editor-top-bar">
               <input id="et" placeholder="tittle" value="${E(d.Title)}" autocomplete="off">
@@ -1446,32 +1555,39 @@
               <div id="meter-col" class="meter-bar ${showMeter ? '' : 'hide'}" style="font-size:${d.fontSize}px" title="Matra / Meter Count per line"></div>
             </div>
           </div>
-
-          <!-- Bottom Row 1: Type, Language, Status, and Favourite in One Row -->
-          <div class="meta-row-controls">
-            <select id="ec" class="inp-grad">
-              ${types.map(t => `<option value="${t}" ${d.Category.toLowerCase() === t.toLowerCase() ? 'selected' : ''}>${t}</option>`).join('')}
-            </select>
-            <select id="el" class="inp-grad">
-              ${langs.map(l => `<option value="${l}" ${d.Language === l ? 'selected' : ''}>${l}</option>`).join('')}
-            </select>
-            <select id="es" class="inp-grad">
-              <option value="Incomplete" ${d.Status === 'Incomplete' ? 'selected' : ''}>Incomplete</option>
-              <option value="Completed" ${d.Status === 'Completed' ? 'selected' : ''}>Completed</option>
-            </select>
-            <button type="button" id="ef-toggle" class="icon-btn ${d.Favorite ? 'on' : ''}">
-              <i class="fa ${d.Favorite ? 'fa-star' : 'fa-star-o'}"></i>
-            </button>
-          </div>
-
-          <!-- Bottom Row 2: Tags in Next Row -->
-          <div class="meta-row-tags">
-            <div class="tags-scroll-box" id="tag-box">
-              ${renderTagChips()}
-              <input id="tag-inp" class="tag-inline-inp" placeholder="+tag,">
-            </div>
-          </div>
         </div>`;
+    }
+
+    function openPublishModal() {
+      const d = S.draft;
+      d.Title = ($('#et')?.value || '').trim();
+      d.Content = $('#eb')?.value || '';
+
+      if (!d.Title || !d.Content.trim()) {
+        return toast('fa-exclamation', 'Title & verse needed', true);
+      }
+
+      // Auto-extract smart tags from poetry content
+      d.Tags = extractSmartTags(d.Content, d.Tags);
+
+      const types = ['Kavita', 'Poetry', 'Ghazal', 'Nazm', 'Shayari', 'Geet', 'Free Verse'];
+      const langs = ['Hindi', 'English', 'Hinglish'];
+
+      const ec = $('#ec');
+      const el = $('#el');
+      const es = $('#es');
+      const ef = $('#ef-toggle');
+
+      if (ec) ec.innerHTML = types.map(t => `<option value="${t}" ${d.Category.toLowerCase() === t.toLowerCase() ? 'selected' : ''}>${t}</option>`).join('');
+      if (el) el.innerHTML = langs.map(l => `<option value="${l}" ${d.Language === l ? 'selected' : ''}>${l}</option>`).join('');
+      if (es) es.value = d.Status || 'Incomplete';
+      if (ef) {
+        ef.classList.toggle('on', !!d.Favorite);
+        ef.innerHTML = `<i class="fa ${d.Favorite ? 'fa-star' : 'fa-star-o'}"></i>`;
+      }
+
+      refreshTagBox();
+      $('#pub-modal').classList.remove('hide');
     }
 
     function renderTagChips() {
@@ -1589,9 +1705,10 @@
     }
 
     // ---- Save & Actions ----
-    async function run(fn, icon = 'fa-check', msg = '') {
+    async function run(fn, icon = 'fa-check', msg = '', loaderMsg = '') {
       if (busy) return false;
       busy = true;
+      showLoader(loaderMsg);
       try {
         await fn();
         await getAllPoetries();
@@ -1601,6 +1718,7 @@
         if (e) toast('fa-exclamation-circle', 'Error', true);
         return false;
       } finally {
+        hideLoader();
         busy = false;
       }
     }
@@ -1641,25 +1759,24 @@
 
     async function publishWithScreen() {
       const d = S.draft;
-      d.Title = ($('#et')?.value || '').trim();
-      d.Category = $('#ec')?.value || 'Kavita';
-      d.Language = $('#el')?.value || 'Hindi';
-      d.Content = $('#eb')?.value || '';
-      d.Status = $('#es')?.value || 'Incomplete';
+      d.Title = ($('#et')?.value || d.Title || '').trim();
+      d.Category = $('#ec')?.value || d.Category || 'Kavita';
+      d.Language = $('#el')?.value || d.Language || 'Hindi';
+      d.Content = $('#eb')?.value || d.Content || '';
+      d.Status = $('#es')?.value || d.Status || 'Incomplete';
 
       if (!d.Title || !d.Content.trim()) {
         return toast('fa-exclamation', 'Title & verse needed', true);
       }
 
-      const ov = $('#pub-overlay');
-      const stTxt = $('#pub-status-txt');
-      stTxt.textContent = d.Status === 'Completed' ? 'Immortalizing your verses...' : 'Preserving your draft...';
-      ov.classList.remove('hide');
+      $('#pub-modal').classList.add('hide');
+      const loaderMsg = d.Status === 'Completed' ? 'Immortalizing your verses...' : 'Preserving your draft...';
+      showLoader(loaderMsg);
 
       try {
         await saveCreation();
       } finally {
-        ov.classList.add('hide');
+        hideLoader();
       }
     }
 
@@ -1789,6 +1906,12 @@
         btn.innerHTML = `<i class="fa ${S.draft.Favorite ? 'fa-star' : 'fa-star-o'}"></i>`;
       }
       else if (id === 'save-btn') {
+        openPublishModal();
+      }
+      else if (id === 'pm-close') {
+        $('#pub-modal').classList.add('hide');
+      }
+      else if (id === 'pm-publish-btn') {
         publishWithScreen();
       }
       else if (id === 'rf-btn') {

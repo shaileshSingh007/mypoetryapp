@@ -3,24 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <title>Poetries</title>
-  <meta name="theme-color" content="#0d0d0f">
+  <title>Sukhan</title>
+  <meta name="theme-color" content="#0b0b0e">
   <!-- Typography & FontAwesome 4.7 Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Noto+Serif+Devanagari:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Noto+Serif+Devanagari:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
-      --bg: #0d0d0f;
-      --surface: #151519;
-      --surface-hover: #1c1c22;
-      --tx: #edeae4;
-      --mu: #78756f;
+      --bg: #0b0b0e;
+      --surface: #131318;
+      --surface-2: #1a1a22;
+      --tx: #f0ece1;
+      --mu: #7e7a72;
       --g: #d4af37;
+      --g2: #f3e5ab;
       --g-dim: rgba(212, 175, 55, 0.14);
-      --bd: #222228;
+      --bd: #24242e;
       --danger: #e05246;
       --ok: #50b878;
+      --grad-border: linear-gradient(135deg, rgba(212,175,55,0.45), rgba(130,100,220,0.22), rgba(212,175,55,0.08));
     }
 
     * {
@@ -28,551 +30,717 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
       background: var(--bg);
       color: var(--tx);
-      font: 16px/1.55 'Cormorant Garamond', 'Noto Serif Devanagari', Georgia, serif;
-      padding: env(safe-area-inset-top) 0 0;
-      overflow-x: hidden;
+      font: 15px/1.5 'Inter', sans-serif;
     }
 
-    /* Ultra-narrow mobile container */
+    /* Gradient Border Utility */
+    .grad-box {
+      position: relative;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background-clip: padding-box;
+    }
+    .grad-box::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: var(--grad-border);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ===== FIRST SCREEN: LOGIN ===== */
+    #login {
+      height: 100dvh;
+      max-width: 460px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      background: radial-gradient(circle at 50% 28%, rgba(212, 175, 55, 0.10), transparent 65%);
+    }
+
+    .logo-wrap {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: linear-gradient(145deg, #17171f, #0d0d12);
+      box-shadow: 0 0 28px rgba(212, 175, 55, 0.22), inset 0 0 15px rgba(212, 175, 55, 0.15);
+      animation: floatPulse 4s ease-in-out infinite;
+    }
+
+    .logo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--g), transparent, var(--g2));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: spinGlow 8s linear infinite;
+    }
+
+    .logo-svg {
+      width: 52px;
+      height: 52px;
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.55));
+    }
+
+    @keyframes floatPulse {
+      0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 0 24px rgba(212, 175, 55, 0.2); }
+      50% { transform: translateY(-6px) scale(1.03); box-shadow: 0 0 38px rgba(212, 175, 55, 0.42); }
+    }
+
+    @keyframes spinGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .poetic-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3em;
+      font-weight: 600;
+      letter-spacing: 3px;
+      margin: 0;
+      background: linear-gradient(90deg, #fff, var(--g2), var(--g));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .poetic-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--mu);
+      font-size: 1.1em;
+      margin-top: -12px;
+      letter-spacing: 1px;
+    }
+
+    /* Curator Stamp */
+    .curator-stamp {
+      margin-top: 14px;
+      padding: 10px 20px;
+      border-radius: 99px;
+      background: rgba(21, 21, 27, 0.85);
+      border: 1px dashed rgba(212, 175, 55, 0.45);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45), inset 0 0 12px rgba(212, 175, 55, 0.06);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .stamp-seal {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--g-dim);
+      border: 1px solid var(--g);
+      color: var(--g);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85em;
+    }
+
+    .stamp-details {
+      text-align: left;
+      line-height: 1.25;
+    }
+
+    .stamp-label {
+      font-size: 0.65em;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      color: var(--mu);
+      display: block;
+    }
+
+    .stamp-owner {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15em;
+      font-weight: 600;
+      color: var(--g2);
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== MAIN APP CONTAINER (NO OUTER SCROLL) ===== */
     #app {
       max-width: 460px;
       margin: 0 auto;
-      min-height: 100vh;
-      position: relative;
-      padding-bottom: calc(74px + env(safe-area-inset-bottom));
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
-    /* Minimalistic Top Header */
+    /* Top Bar with 2 Tabs */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(13, 13, 15, 0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+      padding: 8px 12px;
+      background: rgba(11, 11, 14, 0.92);
       border-bottom: 1px solid var(--bd);
-      padding: 10px 16px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      min-height: 54px;
       gap: 8px;
     }
 
-    .brand {
-      font-size: 1.45em;
-      font-weight: 600;
-      letter-spacing: 0.6px;
-      color: var(--tx);
-      margin: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .top-title {
-      font-size: 1.15em;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .top-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       flex: 1;
-      margin: 0 4px;
-      color: var(--tx);
+      background: var(--surface);
+      padding: 3px;
+      border-radius: 11px;
+      border: 1px solid var(--bd);
     }
 
-    .hdr-actions {
+    .tab-btn {
+      height: 34px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--mu);
+      font-weight: 500;
+      font-size: 0.9em;
       display: flex;
       align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    main {
-      padding: 12px 14px;
+    .tab-btn.on {
+      background: linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.08));
+      color: var(--g2);
+      border: 1px solid rgba(212,175,55,0.35);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
-    /* Icon-only Minimalist Buttons */
-    button {
-      font: inherit;
-      color: var(--tx);
-      background: transparent;
-      border: 1px solid transparent;
+    .icon-btn {
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
-      width: 38px;
-      height: 38px;
+      border: 1px solid var(--bd);
+      background: var(--surface);
+      color: var(--tx);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.16s ease;
-      padding: 0;
       flex-shrink: 0;
+      transition: all 0.15s;
+      padding: 0;
     }
 
-    button:active {
-      transform: scale(0.92);
-    }
-
-    .btn-surface {
-      background: var(--surface);
-      border-color: var(--bd);
-    }
-
-    .btn-gold {
-      background: var(--g);
-      color: #0d0d0f;
+    .icon-btn:active { transform: scale(0.92); }
+    .icon-btn.on {
+      color: var(--g);
+      background: var(--g-dim);
       border-color: var(--g);
     }
 
-    .btn-active {
-      color: var(--g);
-      background: var(--g-dim);
-      border-color: rgba(212, 175, 55, 0.3);
-    }
-
-    .btn-danger {
-      color: var(--danger);
-    }
-
-    /* Search & Filter Bar */
-    .search-bar {
+    /* Main Content Area */
+    #m {
+      flex: 1;
       display: flex;
-      gap: 8px;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 10px 12px;
+    }
+
+    /* ===== POETRY TAB ===== */
+    .poetry-first-row {
+      flex-shrink: 0;
+      height: 40px;
+      display: flex;
       align-items: center;
+      gap: 6px;
       margin-bottom: 10px;
     }
 
-    .search-wrap {
+    /* 50% Width Search Input with Inside Cut Icon */
+    .search-half {
+      width: 50%;
       position: relative;
-      flex: 1;
+      flex-shrink: 0;
     }
 
-    .search-wrap i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--mu);
-      font-size: 0.9em;
-      pointer-events: none;
-    }
-
-    input, select, textarea {
+    .search-half input {
       width: 100%;
+      height: 36px;
       background: var(--surface);
       border: 1px solid var(--bd);
-      border-radius: 11px;
+      border-radius: 10px;
       color: var(--tx);
-      padding: 9px 12px;
-      font: 14px/1.4 'Inter', sans-serif;
+      padding: 0 28px 0 28px;
+      font-size: 0.85em;
       outline: none;
-      transition: border-color 0.2s;
     }
 
-    input:focus, select:focus, textarea:focus {
+    .search-half input:focus {
       border-color: var(--g);
     }
 
-    .search-wrap input {
-      padding-left: 34px;
-      height: 38px;
+    .search-half .s-ico {
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--mu);
+      font-size: 0.8em;
+      pointer-events: none;
     }
 
-    /* Status Filter Pills (All / Incomplete / Complete) */
-    .filter-Drawer {
+    .search-half .cut-ico {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--mu);
+      font-size: 0.85em;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .row-toggles {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    /* Filter Replacement Row */
+    .filter-replace-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .filter-replace-row select {
+      flex: 1;
+      min-width: 0;
+      height: 36px;
       background: var(--surface);
       border: 1px solid var(--bd);
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 12px;
+      border-radius: 9px;
+      color: var(--tx);
+      font-size: 0.78em;
+      padding: 0 4px;
+      outline: none;
+    }
+
+    /* Second Row: 100% width, Remaining Height, Scrollable */
+    .poetry-list-scroll {
+      flex: 1;
+      width: 100%;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      padding-right: 2px;
+      padding-bottom: 12px;
     }
 
-    .icon-tabs {
-      display: flex;
-      gap: 6px;
-      background: var(--bg);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--bd);
-    }
+    .poetry-list-scroll::-webkit-scrollbar { width: 4px; }
+    .poetry-list-scroll::-webkit-scrollbar-thumb { background: var(--bd); border-radius: 4px; }
 
-    .icon-tabs button {
-      flex: 1;
-      height: 32px;
-      width: auto;
-      border-radius: 7px;
-      color: var(--mu);
-      font-size: 0.92em;
-    }
-
-    .icon-tabs button.on {
-      background: var(--surface-hover);
-      color: var(--g);
-      border-color: var(--bd);
-    }
-
-    /* Minimalistic Poetry List */
-    .poem-list {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .poem-item {
+    .poem-card {
+      padding: 11px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 13px 6px;
-      border-bottom: 1px solid var(--bd);
+      gap: 10px;
       cursor: pointer;
-      gap: 12px;
-      transition: background 0.15s;
+      transition: transform 0.14s ease;
     }
 
-    .poem-item:first-child {
-      border-top: 1px solid var(--bd);
-    }
+    .poem-card:active { transform: scale(0.99); }
 
-    .poem-item:active {
-      background: var(--surface);
-    }
-
-    .poem-main {
+    .poem-info {
       min-width: 0;
       flex: 1;
     }
 
-    .poem-title-row {
+    .poem-head {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
     }
 
     .poem-title {
-      font-size: 1.18em;
-      font-weight: 600;
-      color: var(--tx);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .poem-snippet {
-      margin: 2px 0 0;
-      color: var(--mu);
-      font-size: 0.95em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', serif;
-    }
-
-    .poem-meta-icons {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      flex-shrink: 0;
-      font-size: 0.85em;
-      color: var(--mu);
-    }
-
-    .status-dot {
-      font-size: 0.95em;
-    }
-
-    .status-complete {
-      color: var(--ok);
-    }
-
-    .status-incomplete {
-      color: var(--g);
-    }
-
-    /* Reader View */
-    #rd {
-      white-space: pre-wrap;
-      font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', Georgia, serif;
-      padding: 12px 4px 28px;
-      color: var(--tx);
-      word-break: break-word;
-    }
-
-    .reader-footer-bar {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 10px 6px;
-      border-top: 1px solid var(--bd);
-      margin-top: 16px;
-    }
-
-    /* Editor View */
-    .edit-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .edit-title-input {
       font-family: 'Cormorant Garamond', 'Noto Serif Devanagari', serif;
-      font-size: 1.3em;
+      font-size: 1.2em;
       font-weight: 600;
-      padding: 10px 12px;
-    }
-
-    .row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    textarea#eb {
-      min-height: 54vh;
-      line-height: 1.85;
-      font-size: 1.15em;
-      font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', Georgia, serif;
-      resize: none;
-      padding: 14px;
-    }
-
-    /* Category & Tag Grid */
-    .cat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
-    .cat-card {
-      background: var(--surface);
-      border: 1px solid var(--bd);
-      border-radius: 12px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-    }
-
-    .cat-name {
-      font-weight: 600;
-      font-size: 1.08em;
+      color: var(--tx);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .badge {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.75em;
-      color: var(--g);
-      background: var(--g-dim);
-      padding: 2px 8px;
-      border-radius: 99px;
-    }
-
-    .chip-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 14px;
-    }
-
-    .chip {
-      background: var(--surface);
-      border: 1px solid var(--bd);
-      border-radius: 99px;
-      padding: 4px 11px;
-      font-size: 0.85em;
-      cursor: pointer;
+    .title-right-icons {
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      flex-shrink: 0;
+      font-size: 0.8em;
+    }
+
+    .poem-sub {
+      margin: 2px 0 0;
+      font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', serif;
+      font-size: 0.92em;
       color: var(--mu);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* Settings Stats Grid (Icon + Number only) */
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
+    .poem-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
-    .stat-box {
-      background: var(--surface);
+    .act-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       border: 1px solid var(--bd);
-      border-radius: 12px;
-      padding: 14px 6px;
-      text-align: center;
+      background: rgba(255,255,255,0.02);
+      color: var(--mu);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .act-btn.del:hover, .act-btn.del:active {
+      color: var(--danger);
+      border-color: rgba(224, 82, 70, 0.4);
+    }
+
+    /* ===== CREATE TAB ===== */
+    .create-wrap {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    /* Editor + Meter Box */
+    .editor-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      overflow: hidden;
+      background: var(--surface);
+      border-radius: 12px;
+    }
+
+    /* Floating Transparent +A / -A Top Right */
+    .font-float {
+      position: absolute;
+      top: 7px;
+      right: 44px;
+      z-index: 10;
+      display: flex;
+      gap: 4px;
+    }
+
+    .font-btn {
+      background: rgba(11, 11, 14, 0.55);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      color: var(--g2);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 0.72em;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Main Content Textarea */
+    #eb {
+      flex: 1;
+      height: 100%;
+      background: transparent;
+      border: none;
+      color: var(--tx);
+      padding: 12px 12px;
+      font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.75;
+      resize: none;
+      outline: none;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* Right Side Vertical Meter Bar (For Hindi/Devanagari) */
+    .meter-bar {
+      width: 36px;
+      background: rgba(0, 0, 0, 0.28);
+      border-left: 1px solid var(--bd);
+      padding: 12px 2px;
+      overflow: hidden;
+      text-align: center;
+      font-family: 'Inter', monospace;
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--g);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .meter-line {
+      display: block;
+      font-size: 0.65em;
+      line-height: 2.69; /* Synced visually with 1.75em line height */
+      color: var(--g);
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+
+    /* After Input Field: Two Rows */
+    .meta-row-1 {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 0.9fr;
       gap: 6px;
     }
 
-    .stat-box i {
-      color: var(--g);
-      font-size: 1.1em;
-    }
-
-    .stat-num {
-      font-family: 'Inter', sans-serif;
-      font-size: 1.15em;
-      font-weight: 500;
-    }
-
-    /* Floating Action Button (+ Bottom Right) */
-    #fab {
-      position: fixed;
-      right: max(18px, calc(50% - 212px));
-      bottom: calc(68px + env(safe-area-inset-bottom));
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: var(--g);
-      color: #0d0d0f;
-      border: none;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
-      font-size: 1.3em;
-      z-index: 30;
+    .meta-row-2 {
+      flex-shrink: 0;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
+      height: 38px;
     }
 
-    /* Bottom Navigation Bar (Icon Only) */
-    nav {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
+    .inp-grad {
+      height: 36px;
+      background: var(--surface);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      border-radius: 9px;
+      color: var(--tx);
+      padding: 0 9px;
+      font-size: 0.83em;
+      outline: none;
       width: 100%;
-      max-width: 460px;
-      background: rgba(18, 18, 22, 0.94);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid var(--bd);
+    }
+
+    .inp-grad:focus {
+      border-color: var(--g);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
+    }
+
+    /* Tags 60% Width Horizontal Scroll Container */
+    .tags-scroll-box {
+      width: 60%;
+      height: 36px;
+      background: var(--surface);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      border-radius: 9px;
       display: flex;
-      justify-content: space-around;
-      padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
-      z-index: 25;
+      align-items: center;
+      gap: 5px;
+      padding: 0 7px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    nav button {
-      flex: 1;
-      height: 42px;
+    .tags-scroll-box::-webkit-scrollbar { display: none; }
+
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--g-dim);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: var(--g2);
+      border-radius: 99px;
+      padding: 2px 8px;
+      font-size: 0.74em;
+      flex-shrink: 0;
+    }
+
+    .tag-chip i {
+      cursor: pointer;
+      opacity: 0.75;
+    }
+
+    .tag-inline-inp {
+      background: transparent;
       border: none;
-      border-radius: 0;
-      color: var(--mu);
-      font-size: 1.15em;
+      color: var(--tx);
+      font-size: 0.8em;
+      outline: none;
+      min-width: 65px;
+      flex: 1;
     }
 
-    nav button.on {
-      color: var(--g);
+    .status-sel {
+      flex: 1;
+      min-width: 0;
+      height: 36px;
+      background: var(--surface);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      border-radius: 9px;
+      color: var(--tx);
+      font-size: 0.78em;
+      padding: 0 4px;
+      outline: none;
     }
 
-    /* Custom Minimal Modal (Replaces native confirm/alert) */
-    #modal-overlay {
+    /* Reader Overlay Modal / View */
+    .reader-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 4px 20px;
+    }
+
+    #rd {
+      white-space: pre-wrap;
+      font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', Georgia, serif;
+      color: var(--tx);
+      line-height: 1.85;
+      word-break: break-word;
+    }
+
+    /* GitHub-Style Dual Auth Delete Modal */
+    #gh-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      z-index: 90;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(6px);
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 18px;
     }
 
-    .modal-box {
-      background: var(--surface);
-      border: 1px solid var(--bd);
-      border-radius: 16px;
-      padding: 20px;
+    .gh-box {
       width: 100%;
-      max-width: 280px;
-      text-align: center;
+      max-width: 340px;
+      padding: 18px;
+      background: var(--surface);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .modal-icon {
-      font-size: 2em;
-      color: var(--danger);
-    }
-
-    .modal-actions {
-      display: flex;
       gap: 12px;
-      width: 100%;
-      justify-content: center;
     }
 
-    .modal-actions button {
-      flex: 1;
-      height: 42px;
+    .gh-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--danger);
+      font-weight: 600;
+      font-size: 0.95em;
     }
 
-    /* Toast & Top Loader */
+    .gh-prompt {
+      font-size: 0.83em;
+      color: var(--mu);
+      line-height: 1.4;
+    }
+
+    .gh-target {
+      color: var(--tx);
+      font-weight: 600;
+      user-select: all;
+      background: rgba(255,255,255,0.05);
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+
+    .gh-btn {
+      height: 38px;
+      border-radius: 9px;
+      border: 1px solid rgba(224, 82, 70, 0.4);
+      background: rgba(224, 82, 70, 0.15);
+      color: var(--danger);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gh-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .gh-btn:not(:disabled) {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* Loader & Toast */
     #ld {
       position: fixed;
       top: 0;
       left: 0;
       height: 2px;
-      background: var(--g);
+      background: linear-gradient(90deg, var(--g), #fff);
       width: 0;
       transition: width 0.25s;
-      z-index: 100;
+      z-index: 120;
     }
 
     #toast {
       position: fixed;
-      top: calc(14px + env(safe-area-inset-top));
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--surface-hover);
+      background: var(--surface-2);
       color: var(--g);
-      border: 1px solid var(--bd);
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      z-index: 95;
+      border: 1px solid var(--g);
+      padding: 8px 16px;
+      border-radius: 99px;
+      z-index: 110;
       display: none;
       align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      font-size: 0.85em;
     }
 
-    #login {
-      min-height: 92vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 48px 0;
-      color: var(--mu);
-      font-size: 1.5em;
-    }
-
-    .hide {
-      display: none !important;
-    }
+    .hide { display: none !important; }
   </style>
 </head>
 <body>
@@ -587,32 +755,57 @@
   </script>
 
   <div id="ld"></div>
-  <div id="toast"><i class="fa fa-check"></i></div>
+  <div id="toast"><i class="fa fa-check"></i><span id="toast-msg"></span></div>
 
-  <!-- Custom Icon Confirmation Modal -->
-  <div id="modal-overlay" class="hide">
-    <div class="modal-box">
-      <i id="modal-ico" class="fa fa-exclamation-triangle modal-icon"></i>
-      <div class="modal-actions">
-        <button id="modal-cancel" class="btn-surface"><i class="fa fa-times"></i></button>
-        <button id="modal-ok" class="btn-gold"><i class="fa fa-check"></i></button>
+  <!-- GitHub-Style Dual Authentication Delete Modal -->
+  <div id="gh-modal" class="hide">
+    <div class="gh-box grad-box">
+      <div class="gh-head">
+        <span><i class="fa fa-exclamation-triangle"></i> Delete Verification</span>
+        <i id="gh-close" class="fa fa-times" style="cursor:pointer;color:var(--mu)"></i>
+      </div>
+      <div class="gh-prompt">
+        Type <span id="gh-title-lbl" class="gh-target"></span> below to permanently delete this creation:
+      </div>
+      <input id="gh-inp" class="inp-grad" placeholder="Type exact title to confirm..." autocomplete="off">
+      <button id="gh-confirm" class="gh-btn" disabled>
+        <i class="fa fa-trash-o"></i> Confirm Permanent Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== FIRST SCREEN: LOGIN ===== -->
+  <div id="login" class="hide">
+    <div class="logo-wrap">
+      <!-- Animated Glowing Quill & Crescent Emblem -->
+      <svg class="logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M46 12C33 16 22 28 16 46L12 52L18 48C34 42 46 31 52 18C53 15 50 11 46 12Z" stroke="#d4af37" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(212,175,55,0.12)"/>
+        <path d="M14 50L38 26" stroke="#f3e5ab" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M24 14C17 19 15 29 20 37" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 3"/>
+        <circle cx="45" cy="19" r="2" fill="#f3e5ab"/>
+      </svg>
+    </div>
+
+    <h1 class="poetic-name">SUKHAN</h1>
+    <div class="poetic-sub">The Sanctuary of Unspoken Verses</div>
+
+    <div id="gb" style="margin-top:6px"></div>
+    <div id="lerr" style="color:var(--danger);font-size:0.9em"></div>
+
+    <!-- Personal Curator Stamp -->
+    <div class="curator-stamp">
+      <div class="stamp-seal"><i class="fa fa-feather"></i>✦</div>
+      <div class="stamp-details">
+        <span class="stamp-label">Personal Diwan of</span>
+        <span class="stamp-owner">Shailesh R. C. Singh</span>
       </div>
     </div>
   </div>
 
-  <!-- Login Screen -->
-  <div id="login" class="hide">
-    <h1 class="brand" style="font-size:2.1em">Poetries</h1>
-    <div id="gb"></div>
-    <div id="lerr" style="color:var(--danger);font-size:1.2em"></div>
-  </div>
-
-  <!-- Main Narrow App Shell -->
+  <!-- ===== MAIN SCREEN ===== -->
   <div id="app" class="hide">
     <header id="hdr"></header>
     <main id="m"></main>
-    <button id="fab" data-go="edit" aria-label="Add Poetry"><i class="fa fa-plus"></i></button>
-    <nav id="nv"></nav>
   </div>
 
   <script>
@@ -623,45 +816,112 @@
       s: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
     };
 
+    // Common English, Hinglish & Hindi Stopwords/Prepositions for Auto-Tagging
+    const STOP_WORDS = new Set([
+      'the','and','for','that','this','with','you','not','are','from','your','have','was','will','but','all','can','her','his','one','our','out','day','get','has','him','how','man','new','now','old','see','two','way','who','boy','did','its','let','put','say','she','too','use','into','over','after','under','between','through','during','before','without','within','along','across','behind','beyond','about','above','below','upon','unto','amid','among',
+      'hai','hain','tha','the','thi','aur','mein','main','hum','tum','aap','kya','kyun','kab','kahan','kaise','apna','apni','apne','tera','teri','tere','mera','meri','mere','uska','uski','uske','iska','iski','iske','yeh','woh','jab','tab','ab','bhi','toh','par','pe','se','ko','ka','ki','ke','ne','hi','jo','koi','kuch','sab','ek','do','naya','nayi','liye','saath','bina','andar','bahar','upar','neeche',
+      'है','हैं','था','थे','थी','और','में','मैं','हम','तुम','आप','क्या','क्यों','कब','कहाँ','कैसे','अपना','अपनी','अपने','तेरा','तेरी','तेरे','मेरा','मेरी','मेरे','उसका','उसकी','उसके','इसका','इसकी','इसके','यह','वह','ये','वो','जब','तब','अब','भी','तो','पर','पे','से','को','का','की','के','ने','ही','जो','कोई','कुछ','सब','एक','दो','लिए','साथ','बिना','अंदर','बाहर','ऊपर','नीचे','कर','किया','गया','रहा','रही','रहे','हो','हुआ','हुई'
+    ]);
+
     const S = {
       items: [],
-      view: 'all',
+      view: 'poetry', // 'poetry' | 'create' | 'read'
       id: null,
-      page: 1,
-      fp: false,
-      f: LS.g('flt', { q: '', cat: '', lang: '', status: '', fav: '', tag: '', sort: 'new' }),
-      dirty: false
+      fp: false, // filter row toggle
+      f: LS.g('flt', { q: '', cat: '', lang: '', status: '', fav: '', sort: 'new' }),
+      // Create Tab Active State
+      draft: {
+        Title: '',
+        Category: 'Kavita',
+        Language: 'Hindi',
+        Content: '',
+        Tags: [],
+        Status: 'Incomplete',
+        Favorite: false,
+        fontSize: 18
+      },
+      delTarget: null
     };
 
-    let TOKEN = LS.g('tok', ''), busy = false, modalCb = null;
+    let TOKEN = LS.g('tok', ''), busy = false;
 
-    // Normalize Status helper ('Incomplete' vs 'Complete', backward compatible with Draft/Published)
     function isComplete(status) {
       const s = String(status || '').toLowerCase();
-      return s === 'complete' || s === 'published';
+      return s === 'complete' || s === 'completed' || s === 'published';
     }
 
-    // Minimal Icon Toast
-    function toast(iconClass = 'fa-check', err = false) {
+    function toast(icon = 'fa-check', msg = '', err = false) {
       const e = $('#toast');
-      e.innerHTML = `<i class="fa ${iconClass}"></i>`;
+      e.innerHTML = `<i class="fa ${icon}"></i>${msg ? `<span>${E(msg)}</span>` : ''}`;
       e.style.color = err ? 'var(--danger)' : 'var(--g)';
-      e.style.display = 'flex';
-      setTimeout(() => e.style.display = 'none', 1800);
+      e.style.borderColor = err ? 'var(--danger)' : 'var(--g)';
+      e.style.display = 'inline-flex';
+      setTimeout(() => e.style.display = 'none', 2000);
     }
 
-    // Custom non-blocking modal dialog
-    function askModal(icon, onConfirm) {
-      $('#modal-ico').className = `fa ${icon} modal-icon`;
-      $('#modal-overlay').classList.remove('hide');
-      modalCb = onConfirm;
+    // ---- Devanagari / Urdu Matra (Meter) Calculator per line ----
+    function calcDevanagariMatra(line) {
+      const clean = line.trim();
+      if (!clean) return '·';
+      // Check if line contains Devanagari script characters
+      if (/[\u0900-\u097F]/.test(clean)) {
+        let count = 0;
+        const chars = Array.from(clean);
+        for (let i = 0; i < chars.length; i++) {
+          const code = chars[i].charCodeAt(0);
+          // Independent vowels
+          if (code >= 0x0904 && code <= 0x0914) {
+            // Short vowels (अ, इ, उ, ऋ) = 1, Long vowels (आ, ई, ऊ, ए, ऐ, ओ, औ) = 2
+            if ([0x0905, 0x0907, 0x0909, 0x090B].includes(code)) count += 1;
+            else count += 2;
+          }
+          // Consonants (क to ह)
+          else if (code >= 0x0915 && code <= 0x0939) {
+            const next = chars[i + 1] ? chars[i + 1].charCodeAt(0) : 0;
+            // Halant / Virama (्) makes consonant half (0 standalone weight)
+            if (next === 0x094D) {
+              i++; // skip virama
+            }
+            // Long vowel signs (ा, ी, ू, े, ै, ो, ौ, अनुस्वार ं, विसर्ग ः) = 2
+            else if ([0x093E, 0x0940, 0x0942, 0x0947, 0x0948, 0x094B, 0x094C, 0x0902, 0x0903].includes(next)) {
+              count += 2;
+              i++;
+            }
+            // Short vowel signs (ि, ु, ृ, चंद्रबिंदु ँ) = 1
+            else if ([0x093F, 0x0941, 0x0943, 0x0901].includes(next)) {
+              count += 1;
+              i++;
+            } else {
+              count += 1; // Inherent 'a' vowel = 1
+            }
+          }
+        }
+        return count || '·';
+      }
+      // Fallback syllable estimation for Roman Urdu / Hinglish if Hindi/Urdu selected
+      const words = clean.split(/\s+/).filter(Boolean);
+      let syl = 0;
+      words.forEach(w => {
+        const m = w.match(/[aeiouy]+/gi);
+        syl += m ? m.length : 1;
+      });
+      return syl || '·';
     }
 
-    $('#modal-cancel').onclick = () => { $('#modal-overlay').classList.add('hide'); modalCb = null; };
-    $('#modal-ok').onclick = () => {
-      $('#modal-overlay').classList.add('hide');
-      if (modalCb) { const fn = modalCb; modalCb = null; fn(); }
-    };
+    // ---- Auto Tag Extractor from Content ----
+    function extractSmartTags(content, existingTags = []) {
+      const words = String(content || '')
+        .replace(/[.,!?;:"'()\[\]{}|\\/<>~`@#$%^&*_+=—–-]+/g, ' ')
+        .split(/\s+/)
+        .map(w => w.trim().toLowerCase())
+        .filter(w => w.length >= 3 && !STOP_WORDS.has(w) && isNaN(w));
+
+      const freq = {};
+      words.forEach(w => freq[w] = (freq[w] || 0) + 1);
+      const sorted = Object.keys(freq).sort((a, b) => freq[b] - freq[a]);
+      const combined = [...new Set([...existingTags, ...sorted.slice(0, 6)])];
+      return combined.slice(0, 8);
+    }
 
     function jwt(t) {
       try { return JSON.parse(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) }
@@ -669,16 +929,16 @@
     }
 
     // ---- Auth ----
-    function showLogin(errIcon) {
+    function showLogin(errMsg = '') {
       $('#app').classList.add('hide');
       $('#login').classList.remove('hide');
-      $('#lerr').innerHTML = errIcon ? `<i class="fa ${errIcon}"></i>` : '';
+      $('#lerr').textContent = errMsg;
     }
 
     function onCred(r) {
       const p = jwt(r.credential);
       if (!p || String(p.email).toLowerCase() !== CFG.EMAIL.toLowerCase() || !p.email_verified) {
-        return showLogin('fa-ban');
+        return showLogin('Unauthorized sanctuary access.');
       }
       TOKEN = r.credential;
       LS.s('tok', TOKEN);
@@ -718,7 +978,7 @@
         if (!j.ok) {
           if (j.error === 'auth') {
             logout();
-            showLogin('fa-lock');
+            showLogin('Session expired.');
             throw 0;
           }
           throw new Error(j.error);
@@ -726,7 +986,7 @@
         return j;
       } catch (e) {
         if (e === 0) throw e;
-        throw new Error('fa-wifi');
+        throw new Error('Offline');
       } finally {
         $('#ld').style.width = '100%';
         setTimeout(() => $('#ld').style.width = '0', 260);
@@ -743,29 +1003,26 @@
       $('#login').classList.add('hide');
       $('#app').classList.remove('hide');
       S.items = LS.g('pc', []);
-      go('all');
+      go('poetry');
       try { await getAllPoetries(); }
-      catch (e) { if (e) toast('fa-cloud-download', true); }
+      catch (e) { if (e) toast('fa-cloud-download', 'Cached', true); }
       R();
     }
 
-    // ---- Helpers ----
     const byId = id => S.items.find(p => p.ID === id);
-    const tags = p => String(p.Tags || '').split(',').map(x => x.trim()).filter(Boolean);
-    const cats = () => [...new Set(S.items.map(p => p.Category).filter(Boolean))].sort();
+    const cats = () => [...new Set(['Kavita', 'Poetry', 'Ghazal', 'Nazm', 'Shayari', ...S.items.map(p => p.Category).filter(Boolean)])];
 
-    function list(favOnly, catOnly) {
+    function filteredList() {
       const f = S.f, q = f.q.toLowerCase();
       let a = S.items.filter(p => {
         const comp = isComplete(p.Status);
         const matchStatus = !f.status || (f.status === 'Complete' ? comp : !comp);
-        return (!favOnly || p.Favorite) &&
-          (!catOnly || p.Category === catOnly) &&
-          (!q || [p.Title, p.Content, p.Category, p.Tags, p.Language].join(' ').toLowerCase().includes(q)) &&
+        const matchFav = !f.fav || p.Favorite;
+        return (!q || [p.Title, p.Content, p.Category, p.Tags, p.Language].join(' ').toLowerCase().includes(q)) &&
           (!f.cat || p.Category === f.cat) &&
           (!f.lang || p.Language === f.lang) &&
           matchStatus &&
-          (!f.tag || tags(p).includes(f.tag));
+          matchFav;
       });
       const s = {
         new: (x, y) => y.CreatedAt > x.CreatedAt ? 1 : -1,
@@ -775,374 +1032,513 @@
       return a.sort(s[f.sort] || s.new);
     }
 
-    // Minimalistic List Row Item
-    const rowItem = p => {
-      const comp = isComplete(p.Status);
-      const firstLine = String(p.Content || '').split('\n').find(l => l.trim()) || '';
-      return `
-        <div class="poem-item" data-id="${E(p.ID)}">
-          <div class="poem-main">
-            <div class="poem-title-row">
-              <span class="poem-title">${E(p.Title)}</span>
-            </div>
-            <p class="poem-snippet">${E(firstLine)}</p>
-          </div>
-          <div class="poem-meta-icons">
-            ${p.Favorite ? '<i class="fa fa-star" style="color:var(--g)"></i>' : ''}
-            <i class="fa ${comp ? 'fa-check-circle status-complete' : 'fa-clock-o status-incomplete'} status-dot"></i>
-          </div>
-        </div>`;
-    };
-
-    function dl(name, text, type) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([text], { type }));
-      a.download = name;
-      a.click();
-    }
-
-    function txt(p) { return p.Title + '\n\n' + p.Content; }
-    const csv = () => {
-      const H = ['ID', 'Title', 'Category', 'Language', 'Content', 'Tags', 'CreatedAt', 'UpdatedAt', 'Favorite', 'Status'];
-      return H.join(',') + '\n' + S.items.map(p => H.map(k => '"' + String(p[k] ?? '').replace(/"/g, '""') + '"').join(',')).join('\n');
-    };
-
-    // ---- Navigation & Header Rendering ----
+    // ---- Top Bar Header (2 Tabs: Poetry & Create) ----
     function renderHeader() {
       const h = $('#hdr');
-      const fab = $('#fab');
-      // Show floating + button on browse views
-      if (['all', 'favs', 'cats'].includes(S.view)) fab.classList.remove('hide');
-      else fab.classList.add('hide');
-
       if (S.view === 'read') {
         const p = byId(S.id);
-        if (!p) {
-          h.innerHTML = `<button data-go="all"><i class="fa fa-arrow-left"></i></button><div class="top-title"></div>`;
-          return;
-        }
         h.innerHTML = `
-          <button data-go="all"><i class="fa fa-arrow-left"></i></button>
-          <div class="top-title">${E(p.Title)}</div>
-          <div class="hdr-actions">
-            <button id="z-dec"><i class="fa fa-minus"></i></button>
-            <button id="z-inc"><i class="fa fa-plus"></i></button>
-            <button id="fv" class="${p.Favorite ? 'btn-active' : ''}"><i class="fa ${p.Favorite ? 'fa-star' : 'fa-star-o'}"></i></button>
-            <button data-go="edit" data-a="${E(p.ID)}"><i class="fa fa-pencil"></i></button>
-          </div>`;
-      } else if (S.view === 'edit') {
-        const p = S.id ? byId(S.id) : null;
-        const backTarget = S.id ? 'read' : 'all';
-        h.innerHTML = `
-          <button data-go="${backTarget}" data-a="${E(S.id || '')}"><i class="fa fa-times"></i></button>
-          <div class="top-title">${p ? E(p.Title) : 'Poetries'}</div>
-          <div class="hdr-actions">
-            <button id="ef-btn" class="${p?.Favorite ? 'btn-active' : ''}" data-fav="${p?.Favorite ? '1' : '0'}">
-              <i class="fa ${p?.Favorite ? 'fa-star' : 'fa-star-o'}"></i>
-            </button>
-            <button id="save-inc" class="btn-surface" title="Incomplete"><i class="fa fa-clock-o" style="color:var(--g)"></i></button>
-            <button id="save-cmp" class="btn-gold" title="Complete"><i class="fa fa-check"></i></button>
-          </div>`;
+          <button class="icon-btn" data-go="poetry"><i class="fa fa-arrow-left"></i></button>
+          <div style="flex:1;font-family:'Cormorant Garamond',serif;font-size:1.25em;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${E(p?.Title || '')}</div>
+          <button class="icon-btn" id="rd-dec"><i class="fa fa-minus"></i></button>
+          <button class="icon-btn" id="rd-inc"><i class="fa fa-plus"></i></button>
+          <button class="icon-btn ${p?.Favorite ? 'on' : ''}" id="rd-fav"><i class="fa ${p?.Favorite ? 'fa-star' : 'fa-star-o'}"></i></button>
+          <button class="icon-btn" data-edit="${E(p?.ID || '')}"><i class="fa fa-pencil"></i></button>`;
+        return;
+      }
+
+      h.innerHTML = `
+        <div class="top-tabs">
+          <button class="tab-btn ${S.view === 'poetry' ? 'on' : ''}" data-go="poetry">
+            <i class="fa fa-book"></i> Poetry
+          </button>
+          <button class="tab-btn ${S.view === 'create' ? 'on' : ''}" data-go="create">
+            <i class="fa fa-feather"></i>✦ Create
+          </button>
+        </div>
+        ${S.view === 'create'
+          ? `<button id="save-btn" class="icon-btn on" title="Save"><i class="fa fa-check"></i></button>`
+          : `<button id="rf-btn" class="icon-btn" title="Sync"><i class="fa fa-refresh"></i></button>`
+        }`;
+    }
+
+    function loadIntoCreate(p) {
+      if (p) {
+        S.id = p.ID;
+        S.draft = {
+          Title: p.Title || '',
+          Category: p.Category || 'Kavita',
+          Language: p.Language || 'Hindi',
+          Content: p.Content || '',
+          Tags: String(p.Tags || '').split(',').map(x => x.trim()).filter(Boolean),
+          Status: isComplete(p.Status) ? 'Completed' : 'Incomplete',
+          Favorite: !!p.Favorite,
+          fontSize: S.draft.fontSize || 18
+        };
       } else {
-        // Default Minimalistic Header: "Poetries"
-        h.innerHTML = `
-          <h1 class="brand">Poetries</h1>
-          <div class="hdr-actions">
-            ${S.view === 'cats' && S.id ? `<button data-go="cats"><i class="fa fa-arrow-left"></i></button>` : ''}
-            <button id="rnd"><i class="fa fa-random"></i></button>
-            <button id="ft" class="${S.fp ? 'btn-active' : ''}"><i class="fa fa-sliders"></i></button>
-          </div>`;
+        S.id = null;
+        S.draft = {
+          Title: '',
+          Category: 'Kavita',
+          Language: 'Hindi',
+          Content: '',
+          Tags: [],
+          Status: 'Incomplete',
+          Favorite: false,
+          fontSize: 18
+        };
       }
     }
 
-    function nav() {
-      const tabs = [
-        ['all', 'fa-book'],
-        ['favs', 'fa-star'],
-        ['cats', 'fa-folder-o'],
-        ['set', 'fa-cog']
-      ];
-      $('#nv').innerHTML = tabs.map(([k, ico]) =>
-        `<button data-go="${k}" class="${S.view === k ? 'on' : ''}"><i class="fa ${ico}"></i></button>`
-      ).join('');
-    }
-
-    function go(v, id) {
-      if (S.dirty && S.view === 'edit') {
-        return askModal('fa-trash-o', () => { S.dirty = false; go(v, id); });
+    function go(v, id = null) {
+      if (v === 'create' && !id && S.view !== 'create') {
+        loadIntoCreate(null);
       }
-      S.dirty = false;
       S.view = v;
-      S.id = id || null;
-      S.page = 1;
+      if (id !== null) S.id = id;
       R();
-      scrollTo(0, 0);
     }
 
     function R() {
       renderHeader();
-      nav();
-      const m = $('#m'), V = V_[S.view];
-      m.innerHTML = V ? V() : '';
-    }
-
-    // ---- Views ----
-    const V_ = {
-      all() { return page(false); },
-      favs() { return page(true); },
-      cats() {
-        if (S.id) return page(false, S.id);
-        const tg = {};
-        S.items.forEach(p => tags(p).forEach(t => tg[t] = (tg[t] || 0) + 1));
-        const catList = cats();
-        return `
-          <div class="cat-grid">
-            ${catList.map(c => `
-              <div class="cat-card" data-go="cats" data-a="${E(c)}">
-                <span class="cat-name">${E(c)}</span>
-                <span class="badge">${S.items.filter(p => p.Category === c).length}</span>
-              </div>
-            `).join('') || `<div class="empty-state"><i class="fa fa-folder-open-o"></i></div>`}
-          </div>
-          <div class="chip-wrap">
-            ${Object.keys(tg).map(t => `
-              <span class="chip" data-tag="${E(t)}">
-                <i class="fa fa-hashtag"></i>${E(t)} <b>${tg[t]}</b>
-              </span>
-            `).join('')}
-          </div>`;
-      },
-      read() {
-        const p = byId(S.id);
-        if (!p) return `<div class="empty-state"><i class="fa fa-Chain-broken"></i></div>`;
-        const z = LS.g('rs', { s: 20, l: 1.9 });
-        const comp = isComplete(p.Status);
-        return `
-          <div style="display:flex;align-items:center;gap:10px;color:var(--mu);font-size:0.85em;margin-bottom:6px">
-            <span><i class="fa ${comp ? 'fa-check-circle status-complete' : 'fa-clock-o status-incomplete'}"></i></span>
-            <span>${E(p.Category)}</span>
-            <span>·</span>
-            <span>${E(p.Language)}</span>
-            ${tags(p).length ? `<span>· <i class="fa fa-tags"></i> ${tags(p).map(E).join(', ')}</span>` : ''}
-          </div>
-          <div id="rd" style="font-size:${z.s}px;line-height:${z.l}">${E(p.Content)}</div>
-          <div class="reader-footer-bar">
-            <button id="cp" class="btn-surface"><i class="fa fa-clone"></i></button>
-            <button id="sh" class="btn-surface"><i class="fa fa-share-alt"></i></button>
-            <button id="tx" class="btn-surface"><i class="fa fa-download"></i></button>
-            <button id="del" class="btn-surface btn-danger"><i class="fa fa-trash-o"></i></button>
-          </div>`;
-      },
-      edit() {
-        const p = S.id ? byId(S.id) : { Title: '', Category: 'Kavita', Language: 'Hindi', Content: '', Tags: '', Status: 'Incomplete', Favorite: false };
-        return `
-          <div class="edit-form">
-            <input id="et" class="edit-title-input" placeholder="..." value="${E(p.Title)}">
-            <div class="row-2">
-              <input id="ec" list="cl" placeholder="..." value="${E(p.Category)}">
-              <datalist id="cl">
-                ${[...new Set(['Ghazal', 'Kavita', 'Shayari', 'Nazm', 'Free Verse', ...cats()])].map(c => `<option value="${E(c)}">`).join('')}
-              </datalist>
-              <select id="el">
-                ${['Hindi', 'English', 'Urdu', 'Other'].map(l => `<option ${l == p.Language ? 'selected' : ''}>${l}</option>`).join('')}
-              </select>
-            </div>
-            <textarea id="eb" placeholder="...">${E(p.Content)}</textarea>
-            <input id="eg" placeholder="#..." value="${E(p.Tags)}">
-          </div>`;
-      },
-      set() {
-        const a = S.items;
-        const compCount = a.filter(p => isComplete(p.Status)).length;
-        const incCount = a.length - compCount;
-        return `
-          <div class="stat-grid">
-            <div class="stat-box"><i class="fa fa-book"></i><span class="stat-num">${a.length}</span></div>
-            <div class="stat-box"><i class="fa fa-star"></i><span class="stat-num">${a.filter(p => p.Favorite).length}</span></div>
-            <div class="stat-box"><i class="fa fa-clock-o"></i><span class="stat-num">${incCount}</span></div>
-            <div class="stat-box"><i class="fa fa-check-circle"></i><span class="stat-num">${compCount}</span></div>
-          </div>
-          <div style="display:flex;justify-content:space-around;background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:12px">
-            <button id="rf" class="btn-surface"><i class="fa fa-refresh"></i></button>
-            <button id="ej" class="btn-surface"><i class="fa fa-code"></i></button>
-            <button id="ec2" class="btn-surface"><i class="fa fa-table"></i></button>
-            <button id="lo" class="btn-surface btn-danger"><i class="fa fa-sign-out"></i></button>
-          </div>`;
+      const m = $('#m');
+      if (S.view === 'poetry') m.innerHTML = viewPoetry();
+      else if (S.view === 'create') {
+        m.innerHTML = viewCreate();
+        updateMeterBar();
+        bindCreateEvents();
       }
-    };
-
-    function page(fav, cat) {
-      const f = S.f, a = list(fav, cat);
-      const hasFilters = f.cat || f.lang || f.status || f.tag || f.q;
-      return `
-        <div class="search-bar">
-          <div class="search-wrap">
-            <i class="fa fa-search"></i>
-            <input id="sq" type="search" value="${E(f.q)}">
-          </div>
-          ${hasFilters ? `<button data-x="all" class="btn-surface"><i class="fa fa-times"></i></button>` : ''}
-        </div>
-
-        <div class="filter-Drawer ${S.fp ? '' : 'hide'}">
-          <!-- Status Filter: All | Incomplete | Complete -->
-          <div class="icon-tabs">
-            <button data-st="" class="${!f.status ? 'on' : ''}"><i class="fa fa-list-ul"></i></button>
-            <button data-st="Incomplete" class="${f.status === 'Incomplete' ? 'on' : ''}"><i class="fa fa-clock-o"></i></button>
-            <button data-st="Complete" class="${f.status === 'Complete' ? 'on' : ''}"><i class="fa fa-check-circle"></i></button>
-          </div>
-          <!-- Sort Order: Newest | Oldest | A-Z -->
-          <div class="icon-tabs">
-            <button data-so="new" class="${f.sort === 'new' ? 'on' : ''}"><i class="fa fa-sort-numeric-desc"></i></button>
-            <button data-so="old" class="${f.sort === 'old' ? 'on' : ''}"><i class="fa fa-sort-numeric-asc"></i></button>
-            <button data-so="az" class="${f.sort === 'az' ? 'on' : ''}"><i class="fa fa-sort-alpha-asc"></i></button>
-          </div>
-          <div class="row-2">
-            <select id="fc">
-              <option value="">*</option>
-              ${cats().map(o => `<option ${o == f.cat ? 'selected' : ''}>${E(o)}</option>`).join('')}
-            </select>
-            <select id="fl">
-              <option value="">*</option>
-              ${['Hindi', 'English', 'Urdu', 'Other'].map(o => `<option ${o == f.lang ? 'selected' : ''}>${E(o)}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-
-        <div class="poem-list">
-          ${a.slice(0, S.page * 35).map(rowItem).join('') || `<div class="empty-state"><i class="fa fa-feather"></i><i class="fa fa-circle-o"></i></div>`}
-        </div>
-        ${a.length > S.page * 35 ? `<div style="text-align:center;margin-top:14px"><button id="more" class="btn-surface" style="width:100%"><i class="fa fa-angle-down"></i></button></div>` : ''}`;
+      else if (S.view === 'read') m.innerHTML = viewRead();
     }
 
-    // ---- Actions ----
-    async function run(fn, icon = 'fa-check') {
-      if (busy) return;
+    // ---- VIEW 1: POETRY TAB ----
+    function viewPoetry() {
+      const f = S.f;
+      const list = filteredList();
+      const hasActiveFilter = f.cat || f.lang || f.fav || f.status || f.q;
+
+      const firstRowHTML = !S.fp ? `
+        <!-- Normal First Row: 50% Search Input with Cut Icon + Draft Toggle + Published Toggle + Filter Icon -->
+        <div class="search-half">
+          <i class="fa fa-search s-ico"></i>
+          <input id="sq" type="text" placeholder="Search..." value="${E(f.q)}">
+          ${f.q ? `<i id="sq-cut" class="fa fa-times-circle cut-ico"></i>` : ''}
+        </div>
+        <div class="row-toggles">
+          <button class="icon-btn ${f.status === 'Incomplete' ? 'on' : ''}" data-st="Incomplete" title="Draft / Incomplete">
+            <i class="fa fa-clock-o"></i>
+          </button>
+          <button class="icon-btn ${f.status === 'Complete' ? 'on' : ''}" data-st="Complete" title="Published / Complete">
+            <i class="fa fa-check-circle"></i>
+          </button>
+          <button class="icon-btn ${hasActiveFilter ? 'on' : ''}" id="open-flt" title="Filters">
+            <i class="fa fa-sliders"></i>
+          </button>
+        </div>
+      ` : `
+        <!-- Filter Replacement Row -->
+        <div class="filter-replace-row">
+          <select id="flt-cat">
+            <option value="">Type</option>
+            ${cats().map(c => `<option value="${E(c)}" ${f.cat === c ? 'selected' : ''}>${E(c)}</option>`).join('')}
+          </select>
+          <select id="flt-lang">
+            <option value="">Lang</option>
+            ${['Hindi', 'English', 'Hinglish', 'Urdu'].map(l => `<option value="${l}" ${f.lang === l ? 'selected' : ''}>${l}</option>`).join('')}
+          </select>
+          <button class="icon-btn ${f.fav ? 'on' : ''}" id="flt-fav" title="Favorites">
+            <i class="fa fa-star"></i>
+          </button>
+          <button class="icon-btn" id="flt-clear" title="Clear Filters">
+            <i class="fa fa-eraser"></i>
+          </button>
+          <button class="icon-btn" id="flt-close" title="Close">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+      `;
+
+      return `
+        <div class="poetry-first-row">${firstRowHTML}</div>
+        <div class="poetry-list-scroll">
+          ${list.map(p => {
+            const comp = isComplete(p.Status);
+            const firstLine = String(p.Content || '').split('\n').find(l => l.trim()) || '...';
+            return `
+              <div class="poem-card grad-box" data-read="${E(p.ID)}">
+                <div class="poem-info">
+                  <div class="poem-head">
+                    <span class="poem-title">${E(p.Title)}</span>
+                    <span class="title-right-icons">
+                      ${p.Favorite ? `<i class="fa fa-star" style="color:var(--g)"></i>` : ''}
+                      <i class="fa ${comp ? 'fa-check-circle' : 'fa-clock-o'}" style="color:${comp ? 'var(--ok)' : 'var(--g)'}"></i>
+                    </span>
+                  </div>
+                  <p class="poem-sub">${E(firstLine)}</p>
+                </div>
+                <div class="poem-actions">
+                  <button class="act-btn" data-edit="${E(p.ID)}" title="Edit"><i class="fa fa-pencil"></i></button>
+                  <button class="act-btn del" data-del="${E(p.ID)}" title="Delete"><i class="fa fa-trash-o"></i></button>
+                </div>
+              </div>`;
+          }).join('') || `<div style="text-align:center;margin:auto;color:var(--mu)"><i class="fa fa-book" style="font-size:2em;opacity:0.4"></i></div>`}
+        </div>`;
+    }
+
+    // ---- VIEW 2: CREATE TAB ----
+    function viewCreate() {
+      const d = S.draft;
+      const showMeter = d.Language === 'Hindi' || d.Language === 'Urdu';
+      const types = ['Kavita', 'Poetry', 'Ghazal', 'Nazm', 'Shayari', 'Geet', 'Free Verse'];
+      const langs = ['Hindi', 'English', 'Hinglish'];
+
+      return `
+        <div class="create-wrap">
+          <!-- First: Content Input Field + Top-Right Font Controls + Right Meter Bar -->
+          <div class="editor-container grad-box">
+            <div class="font-float">
+              <button class="font-btn" id="cr-fdec" type="button">-A</button>
+              <button class="font-btn" id="cr-finc" type="button">+A</button>
+            </div>
+            <textarea id="eb" style="font-size:${d.fontSize}px" placeholder="उतरने दो काग़ज़ पर रूह के अल्फ़ाज़...">${E(d.Content)}</textarea>
+            <div id="meter-col" class="meter-bar ${showMeter ? '' : 'hide'}" title="Matra / Meter Count per line"></div>
+          </div>
+
+          <!-- Row 1 after Input: Title, Type Dropdown, Language Dropdown -->
+          <div class="meta-row-1">
+            <input id="et" class="inp-grad" placeholder="tittle" value="${E(d.Title)}">
+            <select id="ec" class="inp-grad">
+              ${types.map(t => `<option value="${t}" ${d.Category.toLowerCase() === t.toLowerCase() ? 'selected' : ''}>${t}</option>`).join('')}
+            </select>
+            <select id="el" class="inp-grad">
+              ${langs.map(l => `<option value="${l}" ${d.Language === l ? 'selected' : ''}>${l}</option>`).join('')}
+            </select>
+          </div>
+
+          <!-- Row 2 after Input: Tags (60% width horizontal scroll), Status Dropdown, Favorite Toggle -->
+          <div class="meta-row-2">
+            <div class="tags-scroll-box" id="tag-box">
+              ${renderTagChips()}
+              <input id="tag-inp" class="tag-inline-inp" placeholder="+tag,">
+            </div>
+            <select id="es" class="status-sel">
+              <option value="Incomplete" ${d.Status === 'Incomplete' ? 'selected' : ''}>Incomplete</option>
+              <option value="Completed" ${d.Status === 'Completed' ? 'selected' : ''}>Completed</option>
+            </select>
+            <button type="button" id="ef-toggle" class="icon-btn ${d.Favorite ? 'on' : ''}">
+              <i class="fa ${d.Favorite ? 'fa-star' : 'fa-star-o'}"></i>
+            </button>
+          </div>
+        </div>`;
+    }
+
+    function renderTagChips() {
+      return S.draft.Tags.map((t, idx) => `
+        <span class="tag-chip">
+          #${E(t)} <i class="fa fa-times" data-rmtag="${idx}"></i>
+        </span>`).join('');
+    }
+
+    function refreshTagBox() {
+      const box = $('#tag-box');
+      if (!box) return;
+      const inpVal = $('#tag-inp')?.value || '';
+      box.innerHTML = `${renderTagChips()}<input id="tag-inp" class="tag-inline-inp" placeholder="+tag," value="${E(inpVal)}">`;
+      bindTagInput();
+    }
+
+    function updateMeterBar() {
+      const eb = $('#eb');
+      const col = $('#meter-col');
+      if (!eb || !col) return;
+      const show = S.draft.Language === 'Hindi' || S.draft.Language === 'Urdu';
+      col.classList.toggle('hide', !show);
+      if (!show) return;
+      const lines = eb.value.split('\n');
+      col.innerHTML = lines.map(l => `<span class="meter-line">${calcDevanagariMatra(l)}</span>`).join('');
+      col.scrollTop = eb.scrollTop;
+    }
+
+    function bindTagInput() {
+      const ti = $('#tag-inp');
+      if (!ti) return;
+      const commitCommaTags = () => {
+        const raw = ti.value;
+        if (!raw.trim()) return;
+        const parts = raw.split(',').map(x => x.trim().replace(/^#/, '')).filter(Boolean);
+        parts.forEach(p => {
+          if (!S.draft.Tags.includes(p)) S.draft.Tags.push(p);
+        });
+        ti.value = '';
+        refreshTagBox();
+      };
+      ti.onblur = commitCommaTags;
+      ti.onkeydown = e => {
+        if (e.key === ',' || e.key === 'Enter') {
+          e.preventDefault();
+          commitCommaTags();
+          $('#tag-inp')?.focus();
+        }
+      };
+    }
+
+    function bindCreateEvents() {
+      const eb = $('#eb');
+      if (eb) {
+        eb.onscroll = () => {
+          const col = $('#meter-col');
+          if (col) col.scrollTop = eb.scrollTop;
+        };
+        eb.oninput = () => {
+          S.draft.Content = eb.value;
+          updateMeterBar();
+        };
+        eb.onblur = () => {
+          // Auto-fill main words as tags on blur
+          if (eb.value.trim()) {
+            S.draft.Tags = extractSmartTags(eb.value, S.draft.Tags);
+            refreshTagBox();
+          }
+        };
+      }
+      bindTagInput();
+    }
+
+    // ---- VIEW 3: READ VIEW ----
+    function viewRead() {
+      const p = byId(S.id);
+      if (!p) return `<div style="margin:auto;color:var(--mu)">Not found</div>`;
+      const z = LS.g('rs', 20);
+      const comp = isComplete(p.Status);
+      return `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px 10px;border-bottom:1px solid var(--bd);font-size:0.82em;color:var(--mu)">
+          <span>${E(p.Category)} · ${E(p.Language)}</span>
+          <span style="color:${comp ? 'var(--ok)' : 'var(--g)'}">
+            <i class="fa ${comp ? 'fa-check-circle' : 'fa-clock-o'}"></i> ${comp ? 'Completed' : 'Incomplete'}
+          </span>
+        </div>
+        <div class="reader-scroll">
+          <div id="rd" style="font-size:${z}px">${E(p.Content)}</div>
+        </div>`;
+    }
+
+    // ---- Save & Actions ----
+    async function run(fn, icon = 'fa-check', msg = '') {
+      if (busy) return false;
       busy = true;
       try {
         await fn();
         await getAllPoetries();
-        toast(icon);
+        toast(icon, msg);
         return true;
       } catch (e) {
-        if (e) toast('fa-exclamation-circle', true);
+        if (e) toast('fa-exclamation-circle', 'Error', true);
         return false;
       } finally {
         busy = false;
       }
     }
 
-    async function save(status) {
-      const t = $('#et').value.trim(), c = $('#eb').value;
-      if (!t || !c.trim()) return toast('fa-exclamation', true);
-      const favBtn = $('#ef-btn');
-      const isFav = favBtn && favBtn.dataset.fav === '1';
-      const d = {
-        Title: t,
-        Category: $('#ec').value || 'Other',
-        Language: $('#el').value,
-        Content: c,
-        Tags: $('#eg').value,
-        Status: status,
-        Favorite: isFav
-      };
-      const ok = await run(() => S.id ? updatePoetry(S.id, d) : addPoetry(d), status === 'Complete' ? 'fa-check-circle' : 'fa-clock-o');
-      if (ok) {
-        S.dirty = false;
-        go(S.id ? 'read' : 'all', S.id);
+    async function saveCreation() {
+      const d = S.draft;
+      d.Title = ($('#et')?.value || '').trim();
+      d.Category = $('#ec')?.value || 'Kavita';
+      d.Language = $('#el')?.value || 'Hindi';
+      d.Content = $('#eb')?.value || '';
+      d.Status = $('#es')?.value || 'Incomplete';
+
+      if (!d.Title || !d.Content.trim()) {
+        return toast('fa-exclamation', 'Title & verse needed', true);
       }
+      // Ensure auto-tags are populated if empty
+      if (!d.Tags.length) {
+        d.Tags = extractSmartTags(d.Content, []);
+      }
+
+      const payload = {
+        Title: d.Title,
+        Category: d.Category,
+        Language: d.Language,
+        Content: d.Content,
+        Tags: d.Tags.join(', '),
+        Status: d.Status === 'Completed' ? 'Complete' : 'Incomplete',
+        Favorite: d.Favorite
+      };
+
+      const ok = await run(
+        () => S.id ? updatePoetry(S.id, payload) : addPoetry(payload),
+        'fa-check',
+        'Saved'
+      );
+      if (ok) go('poetry');
     }
 
-    document.addEventListener('click', async e => {
-      const x = e.target.closest('[data-id],[data-go],[data-tag],[data-x],[data-st],[data-so],button');
-      if (!x) return;
-      const D = x.dataset, id = x.id;
+    // ---- GitHub Dual-Auth Delete Setup ----
+    function openDualAuthDelete(poemId) {
+      const p = byId(poemId);
+      if (!p) return;
+      S.delTarget = p;
+      $('#gh-title-lbl').textContent = p.Title;
+      const inp = $('#gh-inp');
+      const btn = $('#gh-confirm');
+      inp.value = '';
+      btn.disabled = true;
+      $('#gh-modal').classList.remove('hide');
+      setTimeout(() => inp.focus(), 60);
+    }
 
-      if (D.id) return go('read', D.id);
-      if (D.go) return go(D.go, D.a);
-      if (D.tag) { S.f.tag = D.tag; LS.s('flt', S.f); return go('all'); }
-      if (D.st !== undefined) { S.f.status = D.st; LS.s('flt', S.f); return R(); }
-      if (D.so) { S.f.sort = D.so; LS.s('flt', S.f); return R(); }
-      if (D.x) {
-        S.f = { q: '', cat: '', lang: '', status: '', fav: '', tag: '', sort: S.f.sort };
-        LS.s('flt', S.f);
-        return R();
-      }
-
-      const p = byId(S.id);
-
-      if (id === 'ft') { S.fp = !S.fp; R(); }
-      else if (id === 'more') { S.page++; R(); }
-      else if (id === 'rnd' && S.items.length) {
-        go('read', S.items[Math.random() * S.items.length | 0].ID);
-      }
-      else if (id === 'z-dec' || id === 'z-inc') {
-        const z = LS.g('rs', { s: 20, l: 1.9 });
-        z.s = Math.min(34, Math.max(14, Number(z.s) + (id === 'z-inc' ? 2 : -2)));
-        LS.s('rs', z);
-        const rd = $('#rd');
-        if (rd) rd.style.fontSize = z.s + 'px';
-      }
-      else if (id === 'fv' && p) {
-        await run(() => updateFavorite(p.ID, !p.Favorite), !p.Favorite ? 'fa-star' : 'fa-star-o');
-        R();
-      }
-      else if (id === 'ef-btn') {
-        const cur = x.dataset.fav === '1';
-        x.dataset.fav = cur ? '0' : '1';
-        x.classList.toggle('btn-active', !cur);
-        x.innerHTML = `<i class="fa ${!cur ? 'fa-star' : 'fa-star-o'}"></i>`;
-        S.dirty = true;
-      }
-      else if (id === 'del' && p) {
-        askModal('fa-trash-o', async () => {
-          if (await run(() => deletePoetry(p.ID), 'fa-trash')) go('all');
-        });
-      }
-      else if (id === 'cp' && p) {
-        try {
-          const ta = document.createElement('textarea');
-          ta.value = txt(p);
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          document.body.removeChild(ta);
-          toast('fa-clone');
-        } catch { toast('fa-times', true); }
-      }
-      else if (id === 'sh' && p) {
-        navigator.share ? navigator.share({ title: p.Title, text: txt(p) }).catch(() => {}) : toast('fa-ban', true);
-      }
-      else if (id === 'tx' && p) dl(p.Title + '.txt', txt(p), 'text/plain;charset=utf-8');
-      else if (id === 'save-inc') save('Incomplete');
-      else if (id === 'save-cmp') save('Complete');
-      else if (id === 'rf') run(() => Promise.resolve(), 'fa-refresh').then(R);
-      else if (id === 'ej') dl('poetries-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(S.items, null, 1), 'application/json');
-      else if (id === 'ec2') dl('poetries.csv', '\ufeff' + csv(), 'text/csv;charset=utf-8');
-      else if (id === 'lo') logout();
+    $('#gh-inp').addEventListener('input', e => {
+      if (!S.delTarget) return;
+      const match = e.target.value.trim() === S.delTarget.Title.trim();
+      $('#gh-confirm').disabled = !match;
     });
 
-    let tm;
+    $('#gh-close').addEventListener('click', () => {
+      $('#gh-modal').classList.add('hide');
+      S.delTarget = null;
+    });
+
+    $('#gh-confirm').addEventListener('click', async () => {
+      if (!S.delTarget) return;
+      const id = S.delTarget.ID;
+      $('#gh-modal').classList.add('hide');
+      S.delTarget = null;
+      await run(() => deletePoetry(id), 'fa-trash', 'Deleted');
+      R();
+    });
+
+    // ---- Global Click & Input Delegation ----
+    document.addEventListener('click', async e => {
+      // Remove tag chip
+      const rmTag = e.target.closest('[data-rmtag]');
+      if (rmTag) {
+        const idx = Number(rmTag.dataset.rmtag);
+        S.draft.Tags.splice(idx, 1);
+        refreshTagBox();
+        return;
+      }
+
+      // Edit button on list or reader
+      const editBtn = e.target.closest('[data-edit]');
+      if (editBtn) {
+        e.stopPropagation();
+        const p = byId(editBtn.dataset.edit);
+        if (p) {
+          loadIntoCreate(p);
+          go('create', p.ID);
+        }
+        return;
+      }
+
+      // Delete button on list
+      const delBtn = e.target.closest('[data-del]');
+      if (delBtn) {
+        e.stopPropagation();
+        openDualAuthDelete(delBtn.dataset.del);
+        return;
+      }
+
+      // Read card click
+      const readCard = e.target.closest('[data-read]');
+      if (readCard) {
+        go('read', readCard.dataset.read);
+        return;
+      }
+
+      // Navigation tabs
+      const goBtn = e.target.closest('[data-go]');
+      if (goBtn) {
+        go(goBtn.dataset.go);
+        return;
+      }
+
+      // Draft / Published toggle icons in Poetry First Row
+      const stBtn = e.target.closest('[data-st]');
+      if (stBtn) {
+        const val = stBtn.dataset.st;
+        S.f.status = S.f.status === val ? '' : val;
+        LS.s('flt', S.f);
+        R();
+        return;
+      }
+
+      const btn = e.target.closest('button, i');
+      if (!btn) return;
+      const id = btn.id;
+
+      if (id === 'sq-cut') {
+        S.f.q = '';
+        LS.s('flt', S.f);
+        R();
+        $('#sq')?.focus();
+      }
+      else if (id === 'open-flt') { S.fp = true; R(); }
+      else if (id === 'flt-close') { S.fp = false; R(); }
+      else if (id === 'flt-clear') {
+        S.f = { q: '', cat: '', lang: '', status: '', fav: '', sort: 'new' };
+        LS.s('flt', S.f);
+        R();
+      }
+      else if (id === 'flt-fav') {
+        S.f.fav = S.f.fav ? '' : '1';
+        LS.s('flt', S.f);
+        R();
+      }
+      else if (id === 'cr-finc' || id === 'cr-fdec') {
+        S.draft.fontSize = Math.min(30, Math.max(13, S.draft.fontSize + (id === 'cr-finc' ? 2 : -2)));
+        const eb = $('#eb');
+        if (eb) eb.style.fontSize = S.draft.fontSize + 'px';
+      }
+      else if (id === 'ef-toggle') {
+        S.draft.Favorite = !S.draft.Favorite;
+        btn.classList.toggle('on', S.draft.Favorite);
+        btn.innerHTML = `<i class="fa ${S.draft.Favorite ? 'fa-star' : 'fa-star-o'}"></i>`;
+      }
+      else if (id === 'save-btn') {
+        saveCreation();
+      }
+      else if (id === 'rf-btn') {
+        run(() => Promise.resolve(), 'fa-refresh', 'Synced').then(R);
+      }
+      else if (id === 'rd-inc' || id === 'rd-dec') {
+        let z = LS.g('rs', 20);
+        z = Math.min(32, Math.max(14, z + (id === 'rd-inc' ? 2 : -2)));
+        LS.s('rs', z);
+        const rd = $('#rd');
+        if (rd) rd.style.fontSize = z + 'px';
+      }
+      else if (id === 'rd-fav') {
+        const p = byId(S.id);
+        if (p) {
+          await run(() => updateFavorite(p.ID, !p.Favorite), 'fa-star');
+          R();
+        }
+      }
+    });
+
+    let searchTimer;
     document.addEventListener('input', e => {
       const t = e.target, id = t.id;
       if (id === 'sq') {
-        clearTimeout(tm);
-        tm = setTimeout(() => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
           S.f.q = t.value;
           LS.s('flt', S.f);
           const pos = t.selectionStart;
-          S.page = 1;
           R();
           const n = $('#sq');
           if (n) { n.focus(); n.setSelectionRange(pos, pos); }
-        }, 220);
-      } else if (id === 'fc' || id === 'fl') {
-        S.f[id === 'fc' ? 'cat' : 'lang'] = t.value;
-        LS.s('flt', S.f);
-        S.page = 1;
-        R();
-      } else if (S.view === 'edit') {
-        S.dirty = true;
+        }, 180);
       }
+      else if (id === 'flt-cat') { S.f.cat = t.value; LS.s('flt', S.f); R(); }
+      else if (id === 'flt-lang') { S.f.lang = t.value; LS.s('flt', S.f); R(); }
+      else if (id === 'et') S.draft.Title = t.value;
+      else if (id === 'ec') S.draft.Category = t.value;
+      else if (id === 'el') {
+        S.draft.Language = t.value;
+        updateMeterBar();
+      }
+      else if (id === 'es') S.draft.Status = t.value;
     });
 
     initG();

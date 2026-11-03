@@ -210,7 +210,7 @@
       color: var(--g2);
     }
 
-    /* ===== MAIN APP CONTAINER (LOCKED TO INITIAL VIEWPORT SO KEYPAD DOES NOT PUSH BOTTOM ROWS UP) ===== */
+    /* ===== MAIN APP CONTAINER ===== */
     #app {
       max-width: 460px;
       margin: 0 auto;
@@ -310,7 +310,6 @@
       margin-bottom: 10px;
     }
 
-    /* 50% Width Search Input with Inside Cut Icon */
     .search-half {
       width: 50%;
       position: relative;
@@ -361,7 +360,6 @@
       gap: 6px;
     }
 
-    /* Filter Replacement Row */
     .filter-replace-row {
       width: 100%;
       display: flex;
@@ -382,7 +380,6 @@
       outline: none;
     }
 
-    /* Second Row: 100% width, Remaining Height, Scrollable */
     .poetry-list-scroll {
       flex: 1;
       width: 100%;
@@ -496,7 +493,6 @@
       min-height: 0;
     }
 
-    /* When Mobile Keypad is Open: Collapse Only the Content Input Field Above Keypad */
     body.kb-open .editor-container {
       flex: 0 0 calc(var(--vv-h, 55vh) - 64px) !important;
       max-height: calc(var(--vv-h, 55vh) - 64px) !important;
@@ -566,7 +562,6 @@
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
     }
 
-    /* Top Row inside Content Card: Title (Top-Left) + Font Size Icons (Top-Right) */
     .editor-top-bar {
       flex-shrink: 0;
       display: flex;
@@ -629,7 +624,6 @@
       position: relative;
     }
 
-    /* Main Content Textarea */
     #eb {
       flex: 1;
       height: 100%;
@@ -648,7 +642,6 @@
       overflow-wrap: break-word;
     }
 
-    /* Right Side Vertical Meter Bar (For Hindi/Devanagari) */
     .meter-bar {
       width: 36px;
       background: rgba(0, 0, 0, 0.28);
@@ -673,7 +666,6 @@
       white-space: nowrap;
     }
 
-    /* Bottom Row 1: Type, Language, Status, Favourite in One Row */
     .meta-row-controls {
       flex-shrink: 0;
       display: grid;
@@ -682,7 +674,6 @@
       align-items: center;
     }
 
-    /* Bottom Row 2: Tags Full Width Horizontal Scroll */
     .meta-row-tags {
       flex-shrink: 0;
       display: flex;
@@ -707,7 +698,6 @@
       box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
     }
 
-    /* Tags Horizontal Scroll Container */
     .tags-scroll-box {
       width: 100%;
       height: 36px;
@@ -767,7 +757,6 @@
       outline: none;
     }
 
-    /* Reader Overlay Modal / View */
     .reader-scroll {
       flex: 1;
       overflow-y: auto;
@@ -941,7 +930,7 @@
       border: 1px solid var(--g);
       padding: 8px 16px;
       border-radius: 99px;
-      z-index: 110;
+      z-index: 200;
       display: none;
       align-items: center;
       gap: 8px;
@@ -991,7 +980,7 @@
     </div>
   </div>
 
-  <!-- Centered Publish Metadata Modal (Tags First, Then Metadata, Then Publish Button) -->
+  <!-- Centered Publish Metadata Modal -->
   <div id="pub-modal" class="hide">
     <div class="pm-box grad-box">
       <div class="pm-head">
@@ -999,12 +988,12 @@
         <i id="pm-close" class="fa fa-times" style="cursor:pointer;color:var(--mu);font-size:0.85em"></i>
       </div>
 
-      <!-- 1. First: Tags -->
+      <!-- 1. Tags -->
       <div class="meta-row-tags">
         <div class="tags-scroll-box" id="tag-box"></div>
       </div>
 
-      <!-- 2. Then: All Other Metadata -->
+      <!-- 2. Metadata -->
       <div class="pm-grid">
         <select id="ec" class="inp-grad"></select>
         <select id="el" class="inp-grad"></select>
@@ -1030,7 +1019,6 @@
   <!-- ===== FIRST SCREEN: LOGIN ===== -->
   <div id="login" class="hide">
     <div class="logo-wrap">
-      <!-- Animated Glowing Quill & Crescent Emblem -->
       <svg class="logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M46 12C33 16 22 28 16 46L12 52L18 48C34 42 46 31 52 18C53 15 50 11 46 12Z" stroke="#d4af37" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(212,175,55,0.12)"/>
         <path d="M14 50L38 26" stroke="#f3e5ab" stroke-width="1.6" stroke-linecap="round"/>
@@ -1045,7 +1033,6 @@
     <div id="gb" style="margin-top:6px"></div>
     <div id="lerr" style="color:var(--danger);font-size:0.9em"></div>
 
-    <!-- Personal Curator Stamp -->
     <div class="curator-stamp">
       <div class="stamp-seal"><i class="fa fa-pencil"></i></div>
       <div class="stamp-details">
@@ -1073,7 +1060,6 @@
     const INIT_VH = window.innerHeight;
     document.documentElement.style.setProperty('--app-h', INIT_VH + 'px');
 
-    // Track VisualViewport so ONLY the content editor collapses above the keypad while bottom rows stay below
     function syncKeypadHeight() {
       const vvH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       document.documentElement.style.setProperty('--vv-h', vvH + 'px');
@@ -1100,28 +1086,21 @@
     function reformatPoetryText(raw) {
       return String(raw || '')
         .replace(/\r\n|\r/g, '\n')
-        .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '') // remove zero-width & soft-hyphen artifacts
-        .replace(/\u00A0/g, ' ') // normalize non-breaking spaces
-        .replace(/[ \t]+/g, ' ') // collapse multiple horizontal spaces
+        .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '')
+        .replace(/\u00A0/g, ' ')
+        .replace(/[ \t]+/g, ' ')
         .split('\n')
-        .map(line => line.trim()) // clean leading/trailing spaces on each verse line
+        .map(line => line.trim())
         .join('\n')
-        .replace(/\n{3,}/g, '\n\n') // preserve stanza breaks (max 1 empty line between stanzas)
+        .replace(/\n{3,}/g, '\n\n')
         .trim();
     }
 
-    // Prevent Double-Click / Double-Tap Zoom Everywhere
+    // Prevent double-click zoom. (The old touchend double-tap blocker was removed:
+    // it swallowed fast consecutive taps on small buttons. touch-action: manipulation
+    // and user-scalable=no already prevent double-tap zoom.)
     document.addEventListener('dblclick', e => {
       e.preventDefault();
-    }, { passive: false });
-
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', e => {
-      const now = Date.now();
-      if (now - lastTouchEnd <= 300) {
-        e.preventDefault();
-      }
-      lastTouchEnd = now;
     }, { passive: false });
 
     // Common English, Hinglish & Hindi Stopwords, Prepositions & Verbs for Auto-Tagging
@@ -1129,7 +1108,7 @@
       // English prepositions, pronouns & common verbs
       'the','and','for','that','this','with','you','not','are','from','your','have','was','will','but','all','can','her','his','one','our','out','day','get','has','him','how','man','new','now','old','see','two','way','who','boy','did','its','let','put','say','she','too','use','into','over','after','under','between','through','during','before','without','within','along','across','behind','beyond','about','above','below','upon','unto','amid','among',
       'make','made','take','took','come','came','know','knew','think','thought','look','want','give','gave','find','found','tell','told','work','call','try','tried','ask','need','feel','felt','become','leave','left','mean','keep','kept','begin','seem','help','talk','turn','start','show','hear','heard','play','run','move','like','live','believe','hold','bring','happen','write','provide','sit','stand','lose','pay','meet','include','continue','set','learn','change','lead','understand','watch','follow','stop','create','speak','read','allow','add','spend','grow','open','walk','win','offer','remember','love','consider','appear','buy','wait','serve','die','send','expect','build','stay','fall','cut','reach','kill','remain',
-      // Roman Hindi / Hinglish prepositions, pronouns & verbs (karna, marna, rahne, etc.)
+      // Roman Hindi / Hinglish prepositions, pronouns & verbs
       'hai','hain','tha','the','thi','aur','mein','main','hum','tum','aap','kya','kyun','kab','kahan','kaise','apna','apni','apne','tera','teri','tere','mera','meri','mere','uska','uski','uske','iska','iski','iske','yeh','woh','jab','tab','ab','bhi','toh','par','pe','se','ko','ka','ki','ke','ne','hi','jo','koi','kuch','sab','ek','do','naya','nayi','liye','saath','bina','andar','bahar','upar','neeche',
       'kar','kara','kari','kare','karo','karna','karni','karne','karta','karti','karte','kiya','kiye','karenge','mar','mara','mari','mare','maro','marna','marni','marne','marta','marti','marte','rah','raha','rahi','rahe','raho','rahna','rahni','rahne','reh','rehta','rehti','rehte','rehna','rehne','de','do','diya','diye','dena','dene','deta','deti','dete','le','lo','liya','liye','lena','lene','leta','leti','lete','aa','aaya','aayi','aaye','aana','aane','aata','aati','aate','ja','jaa','gaya','gayi','gaye','jana','jaana','jane','jaane','jata','jati','jate','ho','hua','hui','hue','hona','hone','hota','hoti','hote','ban','bana','bani','bane','banna','banne','kaha','kahi','kahe','kahna','kehna','kehne','dekha','dekhi','dekhe','dekhna','dekhne','suna','suni','sune','sunna','sunne','chala','chali','chale','chalna','chalne','mila','mili','mile','milna','milne','rakh','rakha','rakhi','rakhe','rakhna','rakhne','soch','socha','sochna','samajh','samajhna','bata','batana','pata','laga','lagi','lage','lagna','lagne','chah','chaha','chahiye','chahta','chahti','chahte','sakta','sakti','sakte','chuka','chuki','chuke','paya','payi','paye','pana',
       // Devanagari Hindi prepositions, pronouns & verbs
@@ -1139,7 +1118,6 @@
 
     function isLikelyVerb(word) {
       if (STOP_WORDS.has(word)) return true;
-      // Filter common Hindi/Hinglish verb inflections
       if (/^(kar|mar|rah|reh|dekh|sun|chal|mil|rakh|soch|samajh|lag|chah|sak|chuk|bol|likh|padh|baith|uth)(na|ni|ne|ta|ti|te|a|i|e|o|ungi|unga|enge)$/i.test(word)) return true;
       if (/(ना|नी|ने|ता|ती|ते|ऊँगा|ऊँगी|एंगे|एगा|एगी)$/.test(word) && word.length <= 6) return true;
       return false;
@@ -1151,7 +1129,6 @@
       id: null,
       fp: false, // filter row toggle
       f: LS.g('flt', { q: '', cat: '', lang: '', status: '', fav: '', sort: 'new' }),
-      // Create Tab Active State
       draft: {
         Title: '',
         Category: 'Kavita',
@@ -1168,7 +1145,7 @@
     let TOKEN = LS.g('tok', ''), busy = false;
 
     function isComplete(status) {
-      const s = String(status || '').toLowerCase();
+      const s = String(status || '').trim().toLowerCase();
       return s === 'complete' || s === 'completed' || s === 'published';
     }
 
@@ -1185,7 +1162,6 @@
     function calcDevanagariMatra(line) {
       const clean = line.trim();
       if (!clean) return '·';
-      // Check if line contains Devanagari script characters
       if (/[\u0900-\u097F]/.test(clean)) {
         let count = 0;
         const chars = Array.from(clean);
@@ -1193,34 +1169,29 @@
           const code = chars[i].charCodeAt(0);
           // Independent vowels
           if (code >= 0x0904 && code <= 0x0914) {
-            // Short vowels (अ, इ, उ, ऋ) = 1, Long vowels (आ, ई, ऊ, ए, ऐ, ओ, औ) = 2
             if ([0x0905, 0x0907, 0x0909, 0x090B].includes(code)) count += 1;
             else count += 2;
           }
           // Consonants (क to ह)
           else if (code >= 0x0915 && code <= 0x0939) {
             const next = chars[i + 1] ? chars[i + 1].charCodeAt(0) : 0;
-            // Halant / Virama (्) makes consonant half (0 standalone weight)
             if (next === 0x094D) {
-              i++; // skip virama
+              i++; // halant: skip
             }
-            // Long vowel signs (ा, ी, ू, े, ै, ो, ौ, अनुस्वार ं, विसर्ग ः) = 2
             else if ([0x093E, 0x0940, 0x0942, 0x0947, 0x0948, 0x094B, 0x094C, 0x0902, 0x0903].includes(next)) {
               count += 2;
               i++;
             }
-            // Short vowel signs (ि, ु, ृ, चंद्रबिंदु ँ) = 1
             else if ([0x093F, 0x0941, 0x0943, 0x0901].includes(next)) {
               count += 1;
               i++;
             } else {
-              count += 1; // Inherent 'a' vowel = 1
+              count += 1;
             }
           }
         }
         return count || '·';
       }
-      // Fallback syllable estimation for Roman Urdu / Hinglish if Hindi/Urdu selected
       const words = clean.split(/\s+/).filter(Boolean);
       let syl = 0;
       words.forEach(w => {
@@ -1365,6 +1336,7 @@
       const f = S.f, q = f.q.toLowerCase();
       let a = S.items.filter(p => {
         const comp = isComplete(p.Status);
+        // Anything that is not complete counts as a draft (Incomplete / Draft / empty)
         const matchStatus = !f.status || (f.status === 'Complete' ? comp : !comp);
         const matchFav = !f.fav || p.Favorite;
         return (!q || [p.Title, p.Content, p.Category, p.Tags, p.Language].join(' ').toLowerCase().includes(q)) &&
@@ -1381,7 +1353,7 @@
       return a.sort(s[f.sort] || s.new);
     }
 
-    // ---- Top Bar Header (2 Tabs: Poetry & Create) ----
+    // ---- Top Bar Header ----
     function renderHeader() {
       const h = $('#hdr');
       if (S.view === 'read') {
@@ -1467,7 +1439,6 @@
       const hasActiveFilter = f.cat || f.lang || f.fav || f.status || f.q;
 
       const firstRowHTML = !S.fp ? `
-        <!-- Normal First Row: 50% Search Input with Cut Icon + Draft Toggle + Published Toggle + Filter Icon -->
         <div class="search-half">
           <i class="fa fa-search s-ico"></i>
           <input id="sq" type="text" placeholder="Search..." value="${E(f.q)}">
@@ -1485,7 +1456,6 @@
           </button>
         </div>
       ` : `
-        <!-- Filter Replacement Row -->
         <div class="filter-replace-row">
           <select id="flt-cat">
             <option value="">Type</option>
@@ -1541,10 +1511,9 @@
 
       return `
         <div class="create-wrap">
-          <!-- Full-Height Content Input Field with Title (Top-Left) & Font Size Icons (Top-Right) -->
           <div class="editor-container grad-box">
             <div class="editor-top-bar">
-              <input id="et" placeholder="tittle" value="${E(d.Title)}" autocomplete="off">
+              <input id="et" placeholder="Title" value="${E(d.Title)}" autocomplete="off">
               <div class="font-float">
                 <button class="font-btn" id="cr-fdec" type="button"><i class="fa fa-minus"></i><i class="fa fa-font"></i></button>
                 <button class="font-btn" id="cr-finc" type="button"><i class="fa fa-plus"></i><i class="fa fa-font"></i></button>
@@ -1558,27 +1527,23 @@
         </div>`;
     }
 
+    // Tick mark opens the popup directly. Validation happens on the Publish button.
     function openPublishModal() {
       const d = S.draft;
       d.Title = ($('#et')?.value || '').trim();
       d.Content = $('#eb')?.value || '';
 
-      if (!d.Title || !d.Content.trim()) {
-        return toast('fa-exclamation', 'Title & verse needed', true);
-      }
-
-      // Auto-extract smart tags from poetry content
-      d.Tags = extractSmartTags(d.Content, d.Tags);
+      if (d.Content.trim()) d.Tags = extractSmartTags(d.Content, d.Tags);
 
       const types = ['Kavita', 'Poetry', 'Ghazal', 'Nazm', 'Shayari', 'Geet', 'Free Verse'];
-      const langs = ['Hindi', 'English', 'Hinglish'];
+      const langs = ['Hindi', 'English', 'Hinglish', 'Urdu'];
 
       const ec = $('#ec');
       const el = $('#el');
       const es = $('#es');
       const ef = $('#ef-toggle');
 
-      if (ec) ec.innerHTML = types.map(t => `<option value="${t}" ${d.Category.toLowerCase() === t.toLowerCase() ? 'selected' : ''}>${t}</option>`).join('');
+      if (ec) ec.innerHTML = types.map(t => `<option value="${t}" ${String(d.Category).toLowerCase() === t.toLowerCase() ? 'selected' : ''}>${t}</option>`).join('');
       if (el) el.innerHTML = langs.map(l => `<option value="${l}" ${d.Language === l ? 'selected' : ''}>${l}</option>`).join('');
       if (es) es.value = d.Status || 'Incomplete';
       if (ef) {
@@ -1676,7 +1641,6 @@
           updateMeterBar();
         };
         eb.onblur = () => {
-          // Auto-fill main words as tags on blur
           if (eb.value.trim()) {
             S.draft.Tags = extractSmartTags(eb.value, S.draft.Tags);
             refreshTagBox();
@@ -1726,15 +1690,15 @@
     async function saveCreation() {
       const d = S.draft;
       d.Title = ($('#et')?.value || '').trim();
-      d.Category = $('#ec')?.value || 'Kavita';
-      d.Language = $('#el')?.value || 'Hindi';
+      d.Category = $('#ec')?.value || d.Category || 'Kavita';
+      d.Language = $('#el')?.value || d.Language || 'Hindi';
       d.Content = $('#eb')?.value || '';
-      d.Status = $('#es')?.value || 'Incomplete';
+      d.Status = $('#es')?.value || d.Status || 'Incomplete';
 
       if (!d.Title || !d.Content.trim()) {
-        return toast('fa-exclamation', 'Title & verse needed', true);
+        toast('fa-exclamation', 'Title & verse needed', true);
+        return false;
       }
-      // Ensure auto-tags are populated if empty
       if (!d.Tags.length) {
         d.Tags = extractSmartTags(d.Content, []);
       }
@@ -1755,8 +1719,10 @@
         'Saved'
       );
       if (ok) go('poetry');
+      return ok;
     }
 
+    // Checks everything on Publish click. If something is missing the popup stays open.
     async function publishWithScreen() {
       const d = S.draft;
       d.Title = ($('#et')?.value || d.Title || '').trim();
@@ -1770,14 +1736,9 @@
       }
 
       $('#pub-modal').classList.add('hide');
-      const loaderMsg = d.Status === 'Completed' ? 'Immortalizing your verses...' : 'Preserving your draft...';
-      showLoader(loaderMsg);
-
-      try {
-        await saveCreation();
-      } finally {
-        hideLoader();
-      }
+      const ok = await saveCreation();
+      // If the save failed, bring the popup back so nothing is lost
+      if (!ok && S.view === 'create') $('#pub-modal').classList.remove('hide');
     }
 
     // ---- GitHub Dual-Auth Delete Setup ----
@@ -1859,7 +1820,7 @@
         return;
       }
 
-      // Draft / Published toggle icons in Poetry First Row
+      // Draft / Published toggle icons
       const stBtn = e.target.closest('[data-st]');
       if (stBtn) {
         const val = stBtn.dataset.st;
@@ -1869,7 +1830,9 @@
         return;
       }
 
-      const btn = e.target.closest('button, i');
+      // FIX: only match elements that have an id. Previously 'button, i' returned the
+      // inner <i> icon (no id) when the icon was tapped, so the action never ran.
+      const btn = e.target.closest('button[id], i[id]');
       if (!btn) return;
       const id = btn.id;
 

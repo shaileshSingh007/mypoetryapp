@@ -388,8 +388,8 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      padding: 14px 2px 14px 0;
+      gap: 10px;
+      padding: 2px 2px 14px 0;
     }
     .poetry-list-scroll > * { flex-shrink: 0; }
 
@@ -408,42 +408,39 @@
 
     .poem-card:active { transform: scale(0.99); }
 
-    /* Status border indication */
-    .poem-card.done::before {
-      padding: 1.5px;
-      background: linear-gradient(135deg, rgba(80,184,120,0.95), rgba(80,184,120,0.35));
+    /* Card: very thin neutral border */
+    .poem-card::before {
+      padding: 1px;
+      background: rgba(255,255,255,0.07);
     }
-    .poem-card.draft::before {
-      padding: 1.5px;
-      background: linear-gradient(135deg, rgba(212,175,55,0.95), rgba(212,175,55,0.35));
-    }
-    .poem-card.done { box-shadow: 0 0 10px rgba(80,184,120,0.10); }
-    .poem-card.draft { box-shadow: 0 0 10px rgba(212,175,55,0.08); }
 
-    /* Corner badge: half above the card border */
-    .poem-badge {
-      position: absolute;
-      top: -13px;
-      left: 12px;
-      height: 26px;
-      padding: 0 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: var(--bg);
-      border: 1px solid var(--st);
-      border-radius: 8px;
-      font-size: 12px;
+    /* Number (left, vertically centered) */
+    .pc-num {
+      flex-shrink: 0;
+      min-width: 22px;
+      text-align: center;
+      font-size: 16px;
       font-weight: 600;
-      color: var(--tx);
-      z-index: 2;
-      pointer-events: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      color: var(--mu);
+      font-variant-numeric: tabular-nums;
     }
-    .poem-badge .pb-num { color: var(--mu); letter-spacing: 0.3px; }
-    .poem-badge i { font-size: 16px; }
-    .poem-card.done { --st: var(--ok); }
-    .poem-card.draft { --st: var(--g); }
+
+    /* Thin vertical divider doubles as status: green = published, orange = draft */
+    .pc-div {
+      flex-shrink: 0;
+      align-self: stretch;
+      width: 2px;
+      margin: 2px 0;
+      border-radius: 2px;
+    }
+    .pc-div.done { background: var(--ok); }
+    .pc-div.draft { background: #f59e42; }
+
+    .poem-fav {
+      flex-shrink: 0;
+      color: var(--g);
+      font-size: 15px;
+    }
 
     .poem-info {
       min-width: 0;
@@ -1537,15 +1534,13 @@
             const comp = isDone(p);
             const firstLine = String(p.Content || '').split('\n').find(l => l.trim()) || '...';
             return `
-              <div class="poem-card grad-box ${comp ? 'done' : 'draft'}" data-read="${E(p.ID)}">
-                <div class="poem-badge">
-                  <span class="pb-num">${numMap[p.ID] || ''}</span>
-                  <i class="fa ${comp ? 'fa-check-circle' : 'fa-clock-o'}" style="color:${comp ? 'var(--ok)' : 'var(--g)'}"></i>
-                  <i class="fa ${p.Favorite ? 'fa-star' : 'fa-star-o'}" style="color:${p.Favorite ? 'var(--g)' : 'var(--mu)'}"></i>
-                </div>
+              <div class="poem-card grad-box" data-read="${E(p.ID)}">
+                <div class="pc-num">${numMap[p.ID] || ''}</div>
+                <div class="pc-div ${comp ? 'done' : 'draft'}"></div>
                 <div class="poem-info">
                   <div class="poem-head">
                     <span class="poem-title">${E(p.Title)}</span>
+                    ${p.Favorite ? `<i class="fa fa-star poem-fav"></i>` : ''}
                   </div>
                   <p class="poem-sub">${E(firstLine)}</p>
                 </div>
